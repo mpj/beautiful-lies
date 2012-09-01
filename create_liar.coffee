@@ -55,6 +55,8 @@ find_function = (arguments_obj) ->
 callback_arguments_array = (lie) ->
   args = []
   highest_index = 0
+  # TODO perhaps use the funky coffescript Comprehensions here
+  # to create a matches array
   for property of lie
     match = /callback_argument_(\d+)/.exec property
     if match?
@@ -66,9 +68,7 @@ callback_arguments_array = (lie) ->
   for i in [0..highest_index]
     args[i] = null if not args[i]?
 
-  return null if args.length is 0
-
-  args
+  return  if args.length > 0 then args else null
 
 arrays_equal = (a, b) ->
   for item, i in a
