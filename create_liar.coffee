@@ -3,8 +3,6 @@ deepEquals = require './deep_equal.js'
 create_liar = (spec) ->
   
   liar = {}
-
-  # console.log spec
   
   # TODO: Check for function called existance
   if spec.function_called
@@ -12,7 +10,6 @@ create_liar = (spec) ->
     # TODO: check for with_arguments
     liar[spec.function_called] = (actual...) ->
       if spec.with_arguments
-        console.log "actual", actual
         expected = spec.with_arguments
         for e, i in expected
           if actual[i] isnt expected[i]
@@ -22,8 +19,6 @@ create_liar = (spec) ->
               "Expected: " + expected)
 
       spec.returns.value
-
-
 
   liar
 
