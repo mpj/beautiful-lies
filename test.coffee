@@ -5,13 +5,12 @@ describe 'create_mock', ->
   it 'Should simulate a function call', ->
     
     liar = create_liar 
-      function_called: 'collection'
-      with_arguments: [ 'members' ]
+      function_called: 'someFunction'
       returns:
         value: 
           someProperty: 5
 
-    liar.collection('members').should.deep.equal
+    liar.someFunction().should.deep.equal
       someProperty: 5
 
     
