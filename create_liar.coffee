@@ -1,10 +1,11 @@
-deepEquals = require './deep_equal.js'
 
-create_liar = (spec) ->
-  
-  liar = {}
-  
+
+create_liar = (spec) ->  
+  injectLies {}, spec
+
+injectLies = (liar, spec) ->
   # TODO: Check for function called existance
+  console.log "spec", spec
   if spec.function_called
     # TODO: Check for function called = string
     # TODO: check for with_arguments
@@ -18,13 +19,15 @@ create_liar = (spec) ->
               "Actual: " + actual + " " +
               "Expected: " + expected)
 
-      spec.returns.value
+      if spec.returns.value
+        if spec.returns.on_value
+          injectLies spec.returns.value, spec.returns.on_value
+        spec.returns.value
 
+      
   liar
 
 
 
-isObject = (obj) ->
-  obj and typeof(obj) is 'object' and !this.isArray(obj)
 
 module.exports = create_liar
