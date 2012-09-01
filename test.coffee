@@ -1,14 +1,23 @@
-should      = require('chai').should()
+chai        = require 'chai'
+should      = chai.should()
 create_liar = require './create_liar'
 
 # TODO
 # yields
-# properly formatted return statement
+# validate properly formatted return statement
 # validate that expectation is an array (root and on_value)
 # Better error message on unexpected args (list possibles)
 # Check for function called existance
 # Check for function called = string
 # check that arguments is an array
+
+# Better syntax. Maybe:
+# liar.connect = 
+#   expect 'someFunction',
+#     returns: 
+#       value: 7
+# (also, experiment with a fluent/json combo... why not?)
+  
 
 describe 'create_mock', ->
 
@@ -84,3 +93,18 @@ describe 'create_mock', ->
       connection = liar.connect()
       connection.status.should.equal 'open'
       connection.query().should.equal '5 little pigs'
+
+  describe 'Runs callback', ->
+
+    liar = create_liar [
+      function_name: 'connect'
+      callback_argument_2: 
+        value: 'connected'
+    ]
+
+    it 'should run callback', (done) ->
+
+      liar.connect (err, status) ->
+        status.should.equal 'connected'
+        done()
+      
