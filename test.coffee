@@ -4,6 +4,8 @@ create_liar = require './create_liar'
 
 # TODO
 # yields
+  # refactor
+  # moar cases
 # validate properly formatted return statement
 # validate that expectation is an array (root and on_value)
 # Better error message on unexpected args (list possibles)
@@ -99,7 +101,7 @@ describe 'create_mock', ->
     liar = create_liar [
       function_name: 'connect'
       callback_argument_2: 
-        value: 'connected'
+        value: 'connected' # TODO: add support for skipping this
     ]
 
     it 'should run callback', (done) ->

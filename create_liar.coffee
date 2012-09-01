@@ -42,7 +42,6 @@ filter = (lies, function_name, arguments_obj) ->
 
 run_callback = (lie, arguments_obj) ->
   callback_arguments = callback_arguments_array lie
-  console.log "callback_arguments", callback_arguments
   if callback_arguments
     callback = find_function arguments_obj
     if callback
