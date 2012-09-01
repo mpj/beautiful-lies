@@ -1,48 +1,50 @@
 
 
-create_liar = (specs) ->  
-  injectLies {}, specs
+create_liar = (lies) ->  
+  injectLies {}, lies
 
-injectLies = (liar, specs) -> 
-  for spec in specs
-    # TODO: Check for function called existance
-    if spec.function_called
-      # TODO: Check for function called = string
-      # TODO: check for with_arguments
-      liar[spec.function_called] = 
-        createFunction liar, spec.function_called, specs
-        
+injectLies = (liar, lies) -> 
+  for lie in lies
+    liar[lie.function_name] = 
+      generateHandler lie.function_name, lies
   liar
 
-createFunction = (liar, function_name, expectations) ->
-  (actual...) ->
+generateHandler = (function_name, lies) ->
+  () ->
 
-    matching_expectations = []
-    for exp in expectations
-      if exp.function_called is function_name
-        expected = exp.with_arguments ? null
-        if actual.length is 0 and not expected
-          is_match = true
-        else if expected
-          is_match = true  
-          for e, i in expected
-            if actual[i] isnt expected[i]
-              is_match = false
-        
-      matching_expectations.push exp if is_match
-
-    spec = matching_expectations[0]
-    if not spec
+    matching_lies = filter lies, function_name, arguments
+    lie = matching_lies[0]
+    if not lie
       throw new Error(
             "funkyFunction called with unexpected arguments. " +
-            "Actual: " + actual + " " +
-            "Expected: " + expected)
+            "Actual: " + arguments_to_array(arguments).join(', '))
           
-    if spec.returns.value
-      if spec.returns.on_value
-        injectLies spec.returns.value, spec.returns.on_value
-      spec.returns.value
-  
+    r = lie.returns
+    if r.value
+      if r.on_value
+        injectLies r.value, r.on_value
+      r.value
+
+filter = (lies, function_name, arguments_obj) ->
+  matching_lies = []
+  for lie in lies
+    if function_name is lie.function_name
+      arguments_arr = arguments_to_array arguments_obj 
+      if arrays_equal arguments_arr, lie.arguments ? []
+        matching_lies.push lie
+  matching_lies
+
+arguments_to_array = (arguments_obj) ->
+  # Convert that pesky function arguments object
+  # to a normal array
+  arg for arg in arguments_obj
+
+
+arrays_equal = (a, b) ->
+  for item, i in a
+    return false if item isnt b[i]
+  true
+
 
 
 module.exports = create_liar

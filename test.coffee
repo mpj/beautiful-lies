@@ -7,13 +7,16 @@ create_liar = require './create_liar'
 # properly formatted return statement
 # validate that expectation is an array (root and on_value)
 # Better error message on unexpected args (list possibles)
+# Check for function called existance
+# Check for function called = string
+# check that arguments is an array
 
 describe 'create_mock', ->
 
   it 'Should simulate a function call', ->
     
     liar = create_liar [ 
-      function_called: 'someFunction'
+      function_name: 'someFunction'
       returns:
         value: 
           someProperty: 5
@@ -22,11 +25,11 @@ describe 'create_mock', ->
     liar.someFunction().should.deep.equal
       someProperty: 5
 
-  describe 'with_arguments provided', ->
+  describe 'arguments provided', ->
 
     liar = create_liar [
-        function_called: 'funkyFunction'
-        with_arguments: [ 'apples' ]
+        function_name: 'funkyFunction'
+        arguments: [ 'apples' ]
         returns:
           value: 98
     ]
@@ -37,8 +40,7 @@ describe 'create_mock', ->
         liar.funkyFunction 'oranges'
       ).should.throw(
         "funkyFunction called with unexpected arguments. " +
-        "Actual: oranges " + 
-        "Expected: apples")
+        "Actual: oranges")
 
     it 'But it will work with right one', ->
 
@@ -49,11 +51,11 @@ describe 'create_mock', ->
 
     liar = create_liar [
       {
-        function_called: 'authorize'
+        function_name: 'authorize'
         returns:
           value: 98
       },{
-        function_called: 'charge'
+        function_name: 'charge'
         returns: 
           value: 'OK'
         
@@ -68,11 +70,11 @@ describe 'create_mock', ->
   describe 'Expectations should be nestable', ->
 
     liar = create_liar [
-      function_called: 'connect'
+      function_name: 'connect'
       returns: 
         value: { status: 'open' }
         on_value: [
-          function_called: 'query'
+          function_name: 'query'
           returns: 
             value: '5 little pigs'
         ]
