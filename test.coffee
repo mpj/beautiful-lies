@@ -36,23 +36,22 @@ describe 'create_mock', ->
       liar.funkyFunction('apples')
         .should.equal 98
 
-  describe 'Expectations should be nestable', ->
+  describe 'x', ->
 
-    # TODO Better example naming
     liar = create_liar
-      function_called: 'outer_function'
+      function_called: 'connect'
       returns: 
-        value: { aProperty: 9 }
+        value: { status: 'open' }
         on_value: 
-          function_called: 'inner_function'
+          function_called: 'query'
           returns: 
-            value: 'inner_return_value'
+            value: '5 little pigs'
 
     it 'should be possible to call inner functions', ->
 
-      outer = liar.outer_function()
-      outer.aProperty.should.equal 9
-      outer.inner_function().should.equal 'inner_return_value'
+      connection = liar.connect()
+      connection.status.should.equal 'open'
+      connection.query().should.equal 'inner_return_value'
 
 
 
