@@ -23,9 +23,22 @@ describe 'create_mock', ->
 
     (-> 
       liar.funkyFunction 'oranges'
-    ).should.throw("funkyFunction called with unexpected arguments: 'oranges'. Expected: 'apples'")
+    ).should.throw("funkyFunction called with unexpected arguments: 'oranges'. 
+    Expected: 'apples'")
 
-  
+  it 'But it will work with right one', ->
+
+    liar = create_liar
+      function_called: 'funkyFunction'
+      with_arguments: [ 'apples' ]
+      returns:
+        value: 98
+
+    
+    liar.funkyFunction('apples').
+      should.equal(98)
+
+
 
 
     

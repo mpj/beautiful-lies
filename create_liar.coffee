@@ -15,7 +15,6 @@ create_liar = (spec) ->
         actual = arguments
         expected = spec.with_arguments
         for e, i in expected
-          console.log "comparing", actual[i],expected[i]
           if actual[i] isnt expected[i]
             throw "funkyFunction called with unexpected arguments: 'oranges'. 
             Expected: 'apples'" 
