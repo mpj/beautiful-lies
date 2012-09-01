@@ -13,6 +13,21 @@ describe 'create_mock', ->
     liar.someFunction().should.deep.equal
       someProperty: 5
 
+  it 'Should not work with wrong arguments', ->
+
+    liar = create_liar
+      function_called: 'funkyFunction'
+      with_arguments: [ 'apples' ]
+      returns:
+        value: 98
+
+    (-> 
+      liar.funkyFunction 'oranges'
+    ).should.throw("funkyFunction called with unexpected arguments: 'oranges'. Expected: 'apples'")
+
+  
+
+
     
 
 
