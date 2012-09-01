@@ -2,7 +2,6 @@ should      = require('chai').should()
 create_liar = require './create_liar'
 
 # TODO
-# Array of expectations
 # yields
 # properly formatted return statement
 # validate that expectation is an array (root and on_value)
