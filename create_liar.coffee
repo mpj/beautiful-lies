@@ -10,15 +10,15 @@ create_liar = (spec) ->
   if spec.function_called
     # TODO: Check for function called = string
     # TODO: check for with_arguments
-    liar[spec.function_called] = ->
+    liar[spec.function_called] = (actual...) ->
       if spec.with_arguments
-        actual = arguments
+        console.log "actual", actual
         expected = spec.with_arguments
         for e, i in expected
           if actual[i] isnt expected[i]
             throw new Error(
               "funkyFunction called with unexpected arguments. " +
-              "Actual: 'oranges' " + 
+              "Actual: " + actual + " " +
               "Expected: " + expected)
 
       spec.returns.value
@@ -26,9 +26,6 @@ create_liar = (spec) ->
 
 
   liar
-
-
-
 
 
 

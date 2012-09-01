@@ -27,7 +27,7 @@ describe 'create_mock', ->
         liar.funkyFunction 'oranges'
       ).should.throw(
         "funkyFunction called with unexpected arguments. " +
-        "Actual: 'oranges' " + 
+        "Actual: oranges " + 
         "Expected: apples")
 
     it 'But it will work with right one', ->
