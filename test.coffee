@@ -28,7 +28,7 @@ describe 'create_mock', ->
       ).should.throw(
         "funkyFunction called with unexpected arguments. " +
         "Actual: 'oranges' " + 
-        "Expected: 'apples'")
+        "Expected: apples")
 
     it 'But it will work with right one', ->
 

@@ -18,8 +18,8 @@ create_liar = (spec) ->
           if actual[i] isnt expected[i]
             throw new Error(
               "funkyFunction called with unexpected arguments. " +
-              "Actual: " + actual + 
-              "Expected: 'apples'")
+              "Actual: 'oranges' " + 
+              "Expected: " + expected)
 
       spec.returns.value
 
