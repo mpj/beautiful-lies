@@ -6,6 +6,7 @@ create_liar = require './create_liar'
 # yields
 # properly formatted return statement
 # validate that expectation is an array (root and on_value)
+# Better error message on unexpected args (list possibles)
 
 describe 'create_mock', ->
 
