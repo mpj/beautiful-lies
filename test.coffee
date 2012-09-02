@@ -6,7 +6,6 @@ create_liar = require './create_liar'
 # TODO
 
 # Better error message on unexpected args (list possibles)
-# Check for function called existance
 # Check for function called = string
 # check that arguments is an array
 # Check for value on callback arguments
