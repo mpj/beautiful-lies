@@ -4,7 +4,6 @@ expect      = chai.expect
 create_liar = require './create_liar'
 
 # TODO
-# Check for function called = string
 # Check for value on callback arguments
 # Give context to error messages
 # queued vs flow
@@ -251,9 +250,9 @@ describe 'Lie validation', ->
 
   it 'should validate that function is string', ->
     (->
-      myFunc = ->
+      myFunc = -> # just declare a random function
       liar = create_liar [
-        function_name: myFunc # forgot the quotes
+        function_name: myFunc
         returns: 9
       ]
     ).should.throw 'function_name must be a string.'
