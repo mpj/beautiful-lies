@@ -57,18 +57,19 @@ callback_arguments_array = (lie) ->
   highest_index = 0
   # TODO perhaps use the funky coffescript Comprehensions here
   # to create a matches array
-  for property of lie
-    match = /callback_argument_(\d+)/.exec property
+
+  for property_name of lie
+    match = /callback_argument_(\d+)/.exec property_name
     if match?
       index = parseInt(match[1])-1
-      args[index] = lie[property].value
+      args[index] = lie[property_name].value
       highest_index = index if index > highest_index
 
   # fill em up
   for i in [0..highest_index]
     args[i] = null if not args[i]?
 
-  return  if args.length > 0 then args else null
+  if args.length > 0 then args else null
 
 arrays_equal = (a, b) ->
   for item, i in a
