@@ -21,17 +21,23 @@ generateHandler = (function_name, lies) ->
           
     run_callback lie, arguments
 
-    r = lie.returns ? null
-    if r and r.value
-      if r.on_value
-        injectLies r.value, r.on_value
-      r.value
+    if lie.returns?
+      inject_and_return lie.returns 
+
+inject_and_return = (return_lie) ->
+  r = return_lie
+  if r and r.value
+    if r.on_value?
+      console.log "injecting"
+      injectLies r.value, r.on_value
+    r.value
 
 
 filter = (lies, function_name, arguments_obj) ->
   matching_lies = []
   for lie in lies
     if function_name is lie.function_name
+      # TODO can these two lines merge?
       arguments_arr = arguments_to_array arguments_obj
       arguments_arr = remove_functions arguments_arr 
       if arrays_equal arguments_arr, lie.arguments ? []
@@ -45,7 +51,9 @@ run_callback = (lie, arguments_obj) ->
   if callback_arguments
     callback = find_function arguments_obj
     if callback
-      callback.apply this, callback_arguments
+      setTimeout(
+        callback.apply this, callback_arguments
+      , 50)
 
 find_function = (arguments_obj) ->
   for arg in arguments_obj
@@ -61,8 +69,8 @@ callback_arguments_array = (lie) ->
   for property_name of lie
     match = /callback_argument_(\d+)/.exec property_name
     if match?
-      index = parseInt(match[1])-1
-      args[index] = lie[property_name].value
+      index = parseInt(match[1]) - 1
+      args[index] = inject_and_return(lie[property_name])
       highest_index = index if index > highest_index
 
   # fill em up

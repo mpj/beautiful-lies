@@ -5,7 +5,7 @@ create_liar = require './create_liar'
 
 # TODO
 # yields
-  # moar cases
+  # callback values should support on value
 # validate properly formatted return statement
 # validate that expectation is an array (root and on_value)
 # Better error message on unexpected args (list possibles)
@@ -144,4 +144,22 @@ describe 'create_mock', ->
         result.should.deep.equal [ 'Smith', 'Johnson', 'Jackson' ]
         done()
 
+  it 'should support on_value for callback arguments', (done) ->
+
+    liar = create_liar [
+      function_name: 'connect'
+      callback_argument_2:
+        value: 
+          status: 'open'
+        on_value: [
+          function_name: 'query'
+          returns: 
+            value: 
+              size: 72
+        ]
+    ]
+
+    liar.connect (err, connection) ->
+      connection.query().size.should.equal 72
+      done()
       
