@@ -38,11 +38,6 @@ inject_and_return = (return_lie) ->
     injectLies return_lie.value, return_lie.on_value
   return_lie.value
 
-
-filter = (lies, function_name, args_obj) ->
-  lies = filter_on_function(lies, function_name)
-  filter_on_args(lies, args_obj)
-
 filter_on_function = (lies, function_name) ->
   lie for lie in lies when lie.function_name is function_name
 
@@ -50,11 +45,6 @@ filter_on_args = (lies, args_obj) ->
   clean_args = remove_functions(args_obj)
   matches_args = (lie) -> arrays_equal lie.arguments ? [], clean_args
   lie for lie in lies when matches_args(lie)
-      
-
-
-
-
 
 run_callback = (lie, arguments_obj) ->
   callback_arguments = callback_arguments_array lie
