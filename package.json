@@ -1,6 +1,6 @@
 {
   "name": "beautiful_lies",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Create powerful fake objects for your node.js unit tests. Easy to read, write and debug.",
   "main": "create_liar.coffee",
   "dependencies": {},
