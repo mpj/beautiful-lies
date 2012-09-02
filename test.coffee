@@ -4,18 +4,13 @@ expect      = chai.expect
 create_liar = require './create_liar'
 
 # TODO
-# test for multiple possibles
 # Check for function called = string
 # check that arguments is an array
 # Check for value on callback arguments
 # Give context to error messages
-# Some nice debug output
 
-# Improve syntax:
-#liar.fake 'someFunction', -> 
-# returns: 
-#   value: 
-#     someProperty: 5
+# Maybe some nice debug output
+
 
 describe 'create_mock', -> 
 
@@ -159,6 +154,22 @@ describe 'create_mock', ->
     liar.connect (err, connection) ->
       connection.query().size.should.equal 72
       done()
+
+it 'should match to right lie if multiple per function', ->
+  liar = create_liar [{
+    function_name: 'add'
+    arguments: [2, 3]
+    returns: 
+      value: 5
+  },{
+    function_name: 'add'
+    arguments: [5, 4]
+    returns:
+      value: 9
+  }]
+  liar.add(2,3).should.equal 5
+  liar.add(5,4).should.equal 9
+
 
 describe 'Lie validation', ->
   
