@@ -191,3 +191,23 @@ describe 'Lie validation', ->
         function_name: 'do_stuff'
       liar.do_stuff()
     ).should.throw 'lies must be an array.'
+
+  it 'should validate function_name of root', ->
+    (->
+      liar = create_liar [
+        function: 'do_stuff' # forgot _name
+      ]
+    ).should.throw 'lies must have property "function_name"'
+
+  it 'should validate function_name of on_value', ->
+    (->
+      liar = create_liar [
+        function_name: 'do_stuff'
+        returns: 
+          value: {}
+          on_value: [
+            functionn_name: "do_something_else"  # misspelled
+          ]
+      ]
+      liar.do_stuff()
+    ).should.throw 'lies must have property "function_name"'

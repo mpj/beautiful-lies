@@ -7,6 +7,8 @@ injectLies = (liar, lies) ->
   if not Array.isArray lies
     throw new Error "lies must be an array."
   for lie in lies
+    if not lie.function_name?
+      throw new Error 'lies must have property "function_name"'
     liar[lie.function_name] = 
       generateHandler lie.function_name, lies
   liar
@@ -17,7 +19,7 @@ generateHandler = (function_name, lies) -> () ->
   if not lie
     throw new Error(
       "funkyFunction called with unexpected arguments. " +
-      "Actual: " + arguments_to_array(arguments).join(', '))
+      "Actual: " + args_as_array(arguments).join(', '))
         
   run_callback lie, arguments
 
@@ -32,13 +34,12 @@ inject_and_return = (return_lie) ->
     injectLies return_lie.value, return_lie.on_value
   return_lie.value
 
-filter = (lies, function_name, arguments_obj) ->
+filter = (lies, function_name, args_obj) ->
   matching_lies = []
   for lie in lies
     if function_name is lie.function_name
       # TODO can these two lines merge?
-      arguments_arr = arguments_to_array arguments_obj
-      arguments_arr = remove_functions arguments_arr 
+      arguments_arr = remove_functions args_obj
       if arrays_equal arguments_arr, lie.arguments ? []
         matching_lies.push lie
   matching_lies
@@ -90,7 +91,7 @@ remove_functions = (arr) ->
 is_function = (obj) ->
   obj? and {}.toString.call(obj) is '[object Function]'
 
-arguments_to_array = (arguments_obj) ->
+args_as_array = (arguments_obj) ->
   # Convert that pesky function arguments object
   # to a normal array.
   arg for arg in arguments_obj
