@@ -42,8 +42,13 @@ filter_on_function = (lies, function_name) ->
   lie for lie in lies when lie.function_name is function_name
 
 filter_on_args = (lies, args_obj) ->
-  clean_args = remove_functions(args_obj)
-  matches_args = (lie) -> arrays_equal lie.arguments ? [], clean_args
+  actual_args_cleaned = remove_functions(args_obj)
+  matches_args = (lie) -> 
+    lie_args = lie.arguments ? []
+    if not Array.isArray lie_args
+      throw new Error "arguments must be of type Array."
+    arrays_equal lie_args, actual_args_cleaned
+
   lie for lie in lies when matches_args(lie)
 
 run_callback = (lie, arguments_obj) ->

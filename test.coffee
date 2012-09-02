@@ -222,3 +222,12 @@ describe 'Lie validation', ->
       ]
       liar.do_stuff()
     ).should.throw 'lies must have property "function_name"'
+
+  it 'should validate that arguments is an array', ->
+    (->
+      liar = create_liar [
+        function_name: 'woop'
+        arguments: 'hats' # forgot the array brackets
+      ] 
+      liar.woop()
+    ).should.throw 'arguments must be of type Array.'
