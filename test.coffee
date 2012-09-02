@@ -5,7 +5,6 @@ create_liar = require './create_liar'
 
 # TODO
 
-# validate properly formatted return statement
 # validate that expectation is an array (root and on_value)
 # Better error message on unexpected args (list possibles)
 # Check for function called existance
@@ -163,15 +162,26 @@ describe 'create_mock', ->
       done()
 
 describe 'Lie validation', ->
+  
   it 'should validate that return has a value property', ->
     (->
       liar = create_liar [
         function_name: 'something'
         returns:
           values: 'somevalue' #spelled wrong!
-
       ]
       liar.something()
 
-    ).should.throw 'return statement of function something must have property "value"'
-      
+    ).should.throw 'return statement must have property "value"'
+  
+  it 'should validate that on_value is an array', ->
+    (->
+      liar = create_liar [
+        function_name: 'do_stuff'
+        returns: 
+          value: {},
+          on_value: 
+            function_name: 'do_more_stuff'
+      ]
+      liar.do_stuff()
+    ).should.throw 'lies must be an array.'

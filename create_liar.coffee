@@ -4,6 +4,8 @@ create_liar = (lies) ->
   injectLies {}, lies
 
 injectLies = (liar, lies) -> 
+  if not Array.isArray lies
+    throw new Error "lies must be an array."
   for lie in lies
     liar[lie.function_name] = 
       generateHandler lie.function_name, lies
@@ -28,8 +30,7 @@ inject_and_return = (return_lie) ->
   r = return_lie
   if r
     if not r.value? 
-      throw new Error 'return statement of function something ' +
-                      'must have property "value"'
+      throw new Error 'return statement must have property "value"'
     if r.on_value?
       injectLies r.value, r.on_value
     r.value
