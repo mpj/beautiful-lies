@@ -4,19 +4,18 @@ expect      = chai.expect
 create_liar = require './create_liar'
 
 # TODO
-
-# Better error message on unexpected args (list possibles)
+# test for multiple possibles
 # Check for function called = string
 # check that arguments is an array
 # Check for value on callback arguments
+# Give context to error messages
+# Some nice debug output
 
-# Better syntax. Maybe:
-# liar.connect = 
-#   expect 'someFunction',
-#     returns: 
-#       value: 7
-# (also, experiment with a fluent/json combo... why not?)
-  
+# Improve syntax:
+#liar.fake 'someFunction', -> 
+# returns: 
+#   value: 
+#     someProperty: 5
 
 describe 'create_mock', -> 
 
@@ -24,7 +23,7 @@ describe 'create_mock', ->
     
     liar = create_liar [ 
       function_name: 'someFunction'
-      returns:
+      returns: 
         value: 
           someProperty: 5
     ]
@@ -47,7 +46,9 @@ describe 'create_mock', ->
         liar.funkyFunction 'oranges'
       ).should.throw(
         "funkyFunction called with unexpected arguments. " +
-        "Actual: oranges")
+        "Actual: oranges" + 
+        "Possible: apples" 
+      )
 
     it 'But it will work with right one', ->
 

@@ -14,12 +14,16 @@ injectLies = (liar, lies) ->
   liar
 
 generateHandler = (function_name, lies) -> () ->
-  matching_lies = filter lies, function_name, arguments
-  lie = matching_lies[0]
+  matching_function = filter_on_function lies, function_name
+  matching_arguments = filter_on_args matching_function, arguments
+  lie = matching_arguments[0]
   if not lie
-    throw new Error(
-      "funkyFunction called with unexpected arguments. " +
-      "Actual: " + args_as_array(arguments).join(', '))
+    message = "funkyFunction called with unexpected arguments. " +
+              "Actual: " + args_as_array(arguments).join(', ')
+    for lie in matching_function
+      message += "Possible: " + 
+                 args_as_array(lie.arguments).join(', ')
+    throw new Error(message)
         
   run_callback lie, arguments
 
@@ -34,15 +38,21 @@ inject_and_return = (return_lie) ->
     injectLies return_lie.value, return_lie.on_value
   return_lie.value
 
+
 filter = (lies, function_name, args_obj) ->
-  matching_lies = []
-  for lie in lies
-    if function_name is lie.function_name
-      # TODO can these two lines merge?
-      arguments_arr = remove_functions args_obj
-      if arrays_equal arguments_arr, lie.arguments ? []
-        matching_lies.push lie
-  matching_lies
+  lies = filter_on_function(lies, function_name)
+  filter_on_args(lies, args_obj)
+
+filter_on_function = (lies, function_name) ->
+  lie for lie in lies when lie.function_name is function_name
+
+filter_on_args = (lies, args_obj) ->
+  clean_args = remove_functions(args_obj)
+  matches_args = (lie) -> arrays_equal lie.arguments ? [], clean_args
+  lie for lie in lies when matches_args(lie)
+      
+
+
 
 
 
