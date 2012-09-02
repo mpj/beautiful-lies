@@ -5,7 +5,6 @@ create_liar = require './create_liar'
 
 # TODO
 # Check for function called = string
-# check that arguments is an array
 # Check for value on callback arguments
 # Give context to error messages
 
@@ -223,11 +222,27 @@ describe 'Lie validation', ->
       liar.do_stuff()
     ).should.throw 'lies must have property "function_name"'
 
-  it 'should validate that arguments is an array', ->
+  it 'should validate that arguments is an array (root)', ->
     (->
       liar = create_liar [
         function_name: 'woop'
         arguments: 'hats' # forgot the array brackets
       ] 
       liar.woop()
+    ).should.throw 'arguments must be of type Array.'
+
+  it 'should validate that arguments is an array (on_value)', ->
+    (->
+      liar = create_liar [
+        function_name: 'birth'
+        returns: 
+          value: {}
+          on_value: [
+            function_name: 'bark'
+            arguments: 7
+            returns: 
+              value: 'Yiff!'
+          ]
+      ] 
+      liar.birth().bark(7)
     ).should.throw 'arguments must be of type Array.'
