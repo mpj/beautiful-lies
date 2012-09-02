@@ -11,30 +11,26 @@ injectLies = (liar, lies) ->
       generateHandler lie.function_name, lies
   liar
 
-generateHandler = (function_name, lies) ->
-  () ->
+generateHandler = (function_name, lies) -> () ->
+  matching_lies = filter lies, function_name, arguments
+  lie = matching_lies[0]
+  if not lie
+    throw new Error(
+      "funkyFunction called with unexpected arguments. " +
+      "Actual: " + arguments_to_array(arguments).join(', '))
+        
+  run_callback lie, arguments
 
-    matching_lies = filter lies, function_name, arguments
-    lie = matching_lies[0]
-    if not lie
-      throw new Error(
-        "funkyFunction called with unexpected arguments. " +
-        "Actual: " + arguments_to_array(arguments).join(', '))
-          
-    run_callback lie, arguments
-
-    if lie.returns?
-      inject_and_return lie.returns 
+  if lie.returns?
+    inject_and_return lie.returns 
 
 inject_and_return = (return_lie) ->
-  r = return_lie
-  if r
-    if not r.value? 
-      throw new Error 'return statement must have property "value"'
-    if r.on_value?
-      injectLies r.value, r.on_value
-    r.value
-
+  return null if not return_lie
+  if not return_lie.value? 
+    throw new Error 'return statement must have property "value"'
+  if return_lie.on_value?
+    injectLies return_lie.value, return_lie.on_value
+  return_lie.value
 
 filter = (lies, function_name, arguments_obj) ->
   matching_lies = []

@@ -5,7 +5,6 @@ create_liar = require './create_liar'
 
 # TODO
 
-# validate that expectation is an array (root and on_value)
 # Better error message on unexpected args (list possibles)
 # Check for function called existance
 # Check for function called = string
@@ -183,5 +182,12 @@ describe 'Lie validation', ->
           on_value: 
             function_name: 'do_more_stuff'
       ]
+      liar.do_stuff()
+    ).should.throw 'lies must be an array.'
+
+  it 'should validate that root is an array', ->
+    (->
+      liar = create_liar 
+        function_name: 'do_stuff'
       liar.do_stuff()
     ).should.throw 'lies must be an array.'
