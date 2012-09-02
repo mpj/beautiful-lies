@@ -1,4 +1,11 @@
-beautiful_lies
+Beautiful lies
 ==============
 
-A beautiful mocking framework for node.js, written in CoffeeScript. 
+Create powerful fake objects for your node.js unit tests.
+Easy to *read*, *write* and *debug*.
+
+
+
+
+
+
