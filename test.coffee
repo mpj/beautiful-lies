@@ -13,8 +13,7 @@ create_liar = require './create_liar'
 # required
 # Maybe some nice debug output
 
-
-describe 'create_mock', -> 
+describe 'create_liar', -> 
 
   it 'Should simulate a function call', ->
     
