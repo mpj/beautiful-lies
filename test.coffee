@@ -7,7 +7,10 @@ create_liar = require './create_liar'
 # Check for function called = string
 # Check for value on callback arguments
 # Give context to error messages
-
+# queued vs flow
+# times called
+# delay
+# required
 # Maybe some nice debug output
 
 
