@@ -4,8 +4,7 @@ expect      = chai.expect
 create_liar = require './create_liar'
 
 # TODO
-# yields
-  # callback values should support on value
+
 # validate properly formatted return statement
 # validate that expectation is an array (root and on_value)
 # Better error message on unexpected args (list possibles)
@@ -22,7 +21,7 @@ create_liar = require './create_liar'
 # (also, experiment with a fluent/json combo... why not?)
   
 
-describe 'create_mock', ->
+describe 'create_mock', -> 
 
   it 'Should simulate a function call', ->
     
@@ -162,4 +161,17 @@ describe 'create_mock', ->
     liar.connect (err, connection) ->
       connection.query().size.should.equal 72
       done()
+
+describe 'Lie validation', ->
+  it 'should validate that return has a value property', ->
+    (->
+      liar = create_liar [
+        function_name: 'something'
+        returns:
+          values: 'somevalue' #spelled wrong!
+
+      ]
+      liar.something()
+
+    ).should.throw 'return statement of function something must have property "value"'
       

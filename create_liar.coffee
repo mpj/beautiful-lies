@@ -26,9 +26,11 @@ generateHandler = (function_name, lies) ->
 
 inject_and_return = (return_lie) ->
   r = return_lie
-  if r and r.value
+  if r
+    if not r.value? 
+      throw new Error 'return statement of function something ' +
+                      'must have property "value"'
     if r.on_value?
-      console.log "injecting"
       injectLies r.value, r.on_value
     r.value
 
