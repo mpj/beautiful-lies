@@ -9,6 +9,8 @@ injectLies = (liar, lies) ->
   for lie in lies
     if not lie.function_name?
       throw new Error 'lies must have property "function_name"'
+    if typeof lie.function_name isnt 'string'
+      throw new Error 'function_name must be a string.'
     liar[lie.function_name] = 
       generateHandler lie.function_name, lies
   liar
@@ -68,6 +70,7 @@ find_function = (arguments_obj) ->
 callback_arguments_array = (lie) ->
   args = []
   highest_index = 0
+
   # TODO perhaps use the funky coffescript Comprehensions here
   # to create a matches array
 
@@ -100,7 +103,5 @@ args_as_array = (arguments_obj) ->
   # Convert that pesky function arguments object
   # to a normal array.
   arg for arg in arguments_obj
-
-
 
 module.exports = create_liar

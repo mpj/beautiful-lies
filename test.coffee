@@ -22,7 +22,7 @@ describe 'create_liar', ->
       returns: 
         value: 
           someProperty: 5
-    ]
+    ] 
 
     liar.someFunction().should.deep.equal
       someProperty: 5
@@ -248,3 +248,13 @@ describe 'Lie validation', ->
       ] 
       liar.birth().bark(7)
     ).should.throw 'arguments must be of type Array.'
+
+  it 'should validate that function is string', ->
+    (->
+      myFunc = ->
+      liar = create_liar [
+        function_name: myFunc # forgot the quotes
+        returns: 9
+      ]
+    ).should.throw 'function_name must be a string.'
+
