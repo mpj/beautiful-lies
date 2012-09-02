@@ -1,0 +1,31 @@
+{
+  "name": "beautiful_lies",
+  "version": "0.0.1",
+  "description": "Create powerful fake objects for your node.js unit tests. Easy to read, write and debug.",
+  "main": "create_liar.coffee",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "~1.2.0",
+    "growl": "~1.5.1"
+  },
+  "scripts": {
+    "test": "./watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mpj/beautiful_lies.git"
+  },
+  "keywords": [
+    "mock",
+    "stub",
+    "mocking",
+    "stubbing",
+    "faking",
+    "testing",
+    "fakes",
+    "unit",
+    "test"
+  ],
+  "author": "Mattias Petter Johansson",
+  "license": "MIT"
+}
