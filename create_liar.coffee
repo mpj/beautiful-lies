@@ -81,8 +81,7 @@ remove_functions = (arr) ->
   item for item in arr when not is_function(item)
 
 is_function = (obj) ->
-  return false if not obj?
-  (({}).toString).call(obj) is '[object Function]'
+  obj? and {}.toString.call(obj) is '[object Function]'
 
 arguments_to_array = (arguments_obj) ->
   # Convert that pesky function arguments object
