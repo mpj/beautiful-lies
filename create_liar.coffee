@@ -1,9 +1,9 @@
 
 
-create_liar = (lies) ->  
+create_liar = (lies) ->
   injectLies {}, lies
 
-injectLies = (liar, lies) -> 
+injectLies = (liar, lies) ->
   if not Array.isArray lies
     throw new Error "lies must be an array."
   for lie in lies
@@ -11,7 +11,7 @@ injectLies = (liar, lies) ->
       throw new Error 'lies must have property "function_name"'
     if typeof lie.function_name isnt 'string'
       throw new Error 'function_name must be a string.'
-    liar[lie.function_name] = 
+    liar[lie.function_name] =
       generateHandler lie.function_name, lies
   liar
 
@@ -23,18 +23,18 @@ generateHandler = (function_name, lies) -> () ->
     message = "funkyFunction called with unexpected arguments. " +
               "Actual: " + args_as_array(arguments).join(', ')
     for lie in matching_function
-      message += "Possible: " + 
+      message += "Possible: " +
                  args_as_array(lie.arguments).join(', ')
     throw new Error(message)
-        
+
   run_callback lie, arguments
 
   if lie.returns?
-    inject_and_return lie.returns 
+    inject_and_return lie.returns
 
 inject_and_return = (return_lie) ->
   return null if not return_lie
-  if not return_lie.value? 
+  if not return_lie.value?
     throw new Error 'return statement must have property "value"'
   if return_lie.on_value?
     injectLies return_lie.value, return_lie.on_value
@@ -45,7 +45,7 @@ filter_on_function = (lies, function_name) ->
 
 filter_on_args = (lies, args_obj) ->
   actual_args_cleaned = remove_functions(args_obj)
-  matches_args = (lie) -> 
+  matches_args = (lie) ->
     lie_args = lie.arguments ? []
     if not Array.isArray lie_args
       throw new Error "arguments must be of type Array."
@@ -73,18 +73,16 @@ callback_arguments_array = (lie) ->
 
   # TODO perhaps use the funky coffescript Comprehensions here
   # to create a matches array
-
-  for property_name of lie
-    match = /callback_argument_(\d+)/.exec property_name
+  for property_name of lie.yields
+    match = /argument_(\d+)/.exec property_name
     if match?
       index = parseInt(match[1]) - 1
-      args[index] = inject_and_return(lie[property_name])
+      args[index] = inject_and_return(lie.yields[property_name])
       highest_index = index if index > highest_index
 
   # fill em up
   for i in [0..highest_index]
     args[i] = null if not args[i]?
-
   if args.length > 0 then args else null
 
 arrays_equal = (a, b) ->
@@ -93,7 +91,7 @@ arrays_equal = (a, b) ->
   true
 
 remove_functions = (arr) ->
-  # Returns a copy of the array, with functions removed.
+  # Returns a copy of arr, with functions removed.
   item for item in arr when not is_function(item)
 
 is_function = (obj) ->

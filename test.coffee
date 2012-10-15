@@ -4,24 +4,28 @@ expect      = chai.expect
 create_liar = require './create_liar'
 
 # TODO
+# yield
+#  in_order
+#  as_flow
+# yields void
 # Check for value on callback arguments
 # Give context to error messages
-# queued vs flow
 # times called
 # delay
 # required
 # Maybe some nice debug output
+# better variable names ("liar" sucks)
 
-describe 'create_liar', -> 
+describe 'create_liar', ->
 
   it 'Should simulate a function call', ->
-    
-    liar = create_liar [ 
+
+    liar = create_liar [
       function_name: 'someFunction'
-      returns: 
-        value: 
+      returns:
+        value:
           someProperty: 5
-    ] 
+    ]
 
     liar.someFunction().should.deep.equal
       someProperty: 5
@@ -37,12 +41,12 @@ describe 'create_liar', ->
 
     it 'Should not work with wrong arguments', ->
 
-      (-> 
+      (->
         liar.funkyFunction 'oranges'
       ).should.throw(
         "funkyFunction called with unexpected arguments. " +
-        "Actual: oranges" + 
-        "Possible: apples" 
+        "Actual: oranges" +
+        "Possible: apples"
       )
 
     it 'But it will work with right one', ->
@@ -59,9 +63,9 @@ describe 'create_liar', ->
           value: 98
       },{
         function_name: 'charge'
-        returns: 
+        returns:
           value: 'OK'
-        
+
       }
     ]
 
@@ -74,11 +78,11 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'connect'
-      returns: 
+      returns:
         value: { status: 'open' }
         on_value: [
           function_name: 'query'
-          returns: 
+          returns:
             value: '5 little pigs'
         ]
     ]
@@ -93,8 +97,9 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'connect'
-      callback_argument_2: 
-        value: 'connected' # TODO: add support for skipping this
+      yields:
+        argument_2:
+          value: 'connected'
     ]
 
     it 'should run callback', (done) ->
@@ -107,9 +112,10 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'query'
-      callback_argument_1: 
-        value:
-          message: 'Your query was malformed!'
+      yields:
+        argument_1:
+          value:
+            message: 'Your query was malformed!'
     ]
 
     it 'should run callback with correct arguments', (done) ->
@@ -122,10 +128,11 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'query'
-      callback_argument_2: 
-        value: 3
-      callback_argument_3: 
-        value: [ 'Smith', 'Johnson', 'Jackson' ]
+      yields:
+        argument_2:
+          value: 3
+        argument_3:
+          value: [ 'Smith', 'Johnson', 'Jackson' ]
     ]
 
     it 'should run callback with correct arguments', (done) ->
@@ -140,15 +147,16 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'connect'
-      callback_argument_2:
-        value: 
-          status: 'open'
-        on_value: [
-          function_name: 'query'
-          returns: 
-            value: 
-              size: 72
-        ]
+      yields:
+        argument_2:
+          value:
+            status: 'open'
+          on_value: [
+            function_name: 'query'
+            returns:
+              value:
+                size: 72
+          ]
     ]
 
     liar.connect (err, connection) ->
@@ -159,7 +167,7 @@ it 'should match to right lie if multiple per function', ->
   liar = create_liar [{
     function_name: 'add'
     arguments: [2, 3]
-    returns: 
+    returns:
       value: 5
   },{
     function_name: 'add'
@@ -172,7 +180,7 @@ it 'should match to right lie if multiple per function', ->
 
 
 describe 'Lie validation', ->
-  
+
   it 'should validate that return has a value property', ->
     (->
       liar = create_liar [
@@ -183,14 +191,14 @@ describe 'Lie validation', ->
       liar.something()
 
     ).should.throw 'return statement must have property "value"'
-  
+
   it 'should validate that on_value is an array', ->
     (->
       liar = create_liar [
         function_name: 'do_stuff'
-        returns: 
+        returns:
           value: {},
-          on_value: 
+          on_value:
             function_name: 'do_more_stuff'
       ]
       liar.do_stuff()
@@ -198,7 +206,7 @@ describe 'Lie validation', ->
 
   it 'should validate that root is an array', ->
     (->
-      liar = create_liar 
+      liar = create_liar
         function_name: 'do_stuff'
       liar.do_stuff()
     ).should.throw 'lies must be an array.'
@@ -214,7 +222,7 @@ describe 'Lie validation', ->
     (->
       liar = create_liar [
         function_name: 'do_stuff'
-        returns: 
+        returns:
           value: {}
           on_value: [
             functionn_name: "do_something_else"  # misspelled
@@ -228,7 +236,7 @@ describe 'Lie validation', ->
       liar = create_liar [
         function_name: 'woop'
         arguments: 'hats' # forgot the array brackets
-      ] 
+      ]
       liar.woop()
     ).should.throw 'arguments must be of type Array.'
 
@@ -236,15 +244,15 @@ describe 'Lie validation', ->
     (->
       liar = create_liar [
         function_name: 'birth'
-        returns: 
+        returns:
           value: {}
           on_value: [
             function_name: 'bark'
             arguments: 7
-            returns: 
+            returns:
               value: 'Yiff!'
           ]
-      ] 
+      ]
       liar.birth().bark(7)
     ).should.throw 'arguments must be of type Array.'
 
