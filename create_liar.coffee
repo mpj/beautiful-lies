@@ -27,7 +27,7 @@ generateHandler = (function_name, lies) -> () ->
                  args_as_array(lie.arguments).join(', ')
     throw new Error(message)
 
-  run_callback lie, arguments
+  run_callbacks lie, arguments
 
   if lie.returns?
     inject_and_return lie.returns
@@ -53,31 +53,33 @@ filter_on_args = (lies, args_obj) ->
 
   lie for lie in lies when matches_args(lie)
 
-run_callback = (lie, arguments_obj) ->
-  callback_arguments = callback_arguments_array lie
-  if callback_arguments
-    callback = find_function arguments_obj
-    if callback
-      setTimeout(
-        callback.apply this, callback_arguments
-      , 50)
+run_callbacks = (lie, arguments_obj) ->
+  if lie.yields
+    for y in lie.yields
+      callback_arguments = callback_arguments_array y
+      if callback_arguments
+        callback = find_function arguments_obj
+        if callback
+          setTimeout(
+            callback.apply this, callback_arguments
+          , 50)
 
 find_function = (arguments_obj) ->
   for arg in arguments_obj
     return arg if is_function(arg)
   null
 
-callback_arguments_array = (lie) ->
+callback_arguments_array = (yield_spec) ->
   args = []
   highest_index = 0
 
   # TODO perhaps use the funky coffescript Comprehensions here
   # to create a matches array
-  for property_name of lie.yields
+  for property_name of yield_spec
     match = /argument_(\d+)/.exec property_name
     if match?
       index = parseInt(match[1]) - 1
-      args[index] = inject_and_return(lie.yields[property_name])
+      args[index] = inject_and_return(yield_spec[property_name])
       highest_index = index if index > highest_index
 
   # fill em up

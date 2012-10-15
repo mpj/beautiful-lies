@@ -15,6 +15,9 @@ create_liar = require './create_liar'
 # required
 # Maybe some nice debug output
 # better variable names ("liar" sucks)
+# Some kind of terminology to separate the caller and the callee
+#   crazy argument confusion in run_callback
+# yield is probably not the greatest word.
 
 describe 'create_liar', ->
 
@@ -97,9 +100,10 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'connect'
-      yields:
+      yields: [
         argument_2:
           value: 'connected'
+      ]
     ]
 
     it 'should run callback', (done) ->
@@ -112,10 +116,11 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'query'
-      yields:
+      yields: [
         argument_1:
           value:
             message: 'Your query was malformed!'
+      ]
     ]
 
     it 'should run callback with correct arguments', (done) ->
@@ -128,11 +133,12 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'query'
-      yields:
+      yields: [
         argument_2:
           value: 3
         argument_3:
           value: [ 'Smith', 'Johnson', 'Jackson' ]
+      ]
     ]
 
     it 'should run callback with correct arguments', (done) ->
@@ -147,7 +153,7 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'connect'
-      yields:
+      yields: [
         argument_2:
           value:
             status: 'open'
@@ -157,6 +163,7 @@ describe 'create_liar', ->
               value:
                 size: 72
           ]
+      ]
     ]
 
     liar.connect (err, connection) ->
