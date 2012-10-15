@@ -149,6 +149,33 @@ describe 'create_liar', ->
         result.should.deep.equal [ 'Smith', 'Johnson', 'Jackson' ]
         done()
 
+  describe 'Runs callback twice', ->
+
+    liar = create_liar [
+      function_name: 'query'
+      yields: [
+        {
+          argument_1:
+            value: 'hey'
+        },
+        {
+          argument_1:
+            value: 'ho'
+        }
+      ]
+    ]
+
+    it 'should have been run in order', (done) ->
+      arr = []
+      liar.query (str) ->
+        arr.push str
+      setTimeout () ->
+        arr[0].should.equal 'hey'
+        arr[1].should.equal 'ho'
+        done()
+      , 300
+
+
   it 'should support on_value for callback arguments', (done) ->
 
     liar = create_liar [

@@ -60,9 +60,14 @@ run_callbacks = (lie, arguments_obj) ->
       if callback_arguments
         callback = find_function arguments_obj
         if callback
-          setTimeout(
-            callback.apply this, callback_arguments
-          , 50)
+          run_delayed this, callback, callback_arguments, 50
+
+
+run_delayed = (thisObj, fn, args, delay) ->
+  setTimeout () ->
+    fn.apply thisObj, args
+  , delay
+
 
 find_function = (arguments_obj) ->
   for arg in arguments_obj
