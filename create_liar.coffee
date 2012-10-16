@@ -54,13 +54,14 @@ filter_on_args = (lies, args_obj) ->
   lie for lie in lies when matches_args(lie)
 
 run_callbacks = (lie, arguments_obj) ->
-  if lie.yields
-    for y in lie.yields
+  callback = find_function arguments_obj
+  return if not callback
+
+  if lie.yields_as_flow
+    for y in lie.yields_as_flow
       callback_arguments = callback_arguments_array y
       if callback_arguments
-        callback = find_function arguments_obj
-        if callback
-          run_delayed this, callback, callback_arguments, 50
+        run_delayed this, callback, callback_arguments, 50
 
 
 run_delayed = (thisObj, fn, args, delay) ->

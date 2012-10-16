@@ -100,7 +100,7 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'connect'
-      yields: [
+      yields_as_flow: [
         argument_2:
           value: 'connected'
       ]
@@ -116,7 +116,7 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'query'
-      yields: [
+      yields_as_flow: [
         argument_1:
           value:
             message: 'Your query was malformed!'
@@ -133,7 +133,7 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'query'
-      yields: [
+      yields_as_flow: [
         argument_2:
           value: 3
         argument_3:
@@ -149,11 +149,11 @@ describe 'create_liar', ->
         result.should.deep.equal [ 'Smith', 'Johnson', 'Jackson' ]
         done()
 
-  describe 'Runs callback twice', ->
+  describe 'Runs callback flow', ->
 
     liar = create_liar [
       function_name: 'query'
-      yields: [
+      yields_as_flow: [
         {
           argument_1:
             value: 'hey'
@@ -180,7 +180,7 @@ describe 'create_liar', ->
 
     liar = create_liar [
       function_name: 'connect'
-      yields: [
+      yields_as_flow: [
         argument_2:
           value:
             status: 'open'
