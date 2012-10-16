@@ -60,18 +60,14 @@ run_callbacks = (lie, arguments_obj) ->
   return if not callback
 
   if lie.yields_in_order
-    y = lie.yields_in_order[calls++]
-    callback_arguments = callback_arguments_array y
-    if callback_arguments
-      run_delayed this, callback, callback_arguments, 50
-
-
+    run_yield lie.yields_in_order[calls++], callback
 
   if lie.yields_as_flow
-    for y in lie.yields_as_flow
-      callback_arguments = callback_arguments_array y
-      if callback_arguments
-        run_delayed this, callback, callback_arguments, 50
+    run_yield y, callback for y in lie.yields_as_flow
+
+run_yield = (y, callback) ->
+  callback_arguments = callback_arguments_array y
+  run_delayed this, callback, callback_arguments, 50
 
 
 run_delayed = (thisObj, fn, args, delay) ->
