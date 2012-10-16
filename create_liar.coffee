@@ -53,9 +53,19 @@ filter_on_args = (lies, args_obj) ->
 
   lie for lie in lies when matches_args(lie)
 
+calls = 0
+
 run_callbacks = (lie, arguments_obj) ->
   callback = find_function arguments_obj
   return if not callback
+
+  if lie.yields_in_order
+    y = lie.yields_in_order[calls++]
+    callback_arguments = callback_arguments_array y
+    if callback_arguments
+      run_delayed this, callback, callback_arguments, 50
+
+
 
   if lie.yields_as_flow
     for y in lie.yields_as_flow

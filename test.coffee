@@ -5,8 +5,8 @@ create_liar = require './create_liar'
 
 # TODO
 # yield
-#  in_order
-#  as_flow
+#  test for conflicts when calling order many times
+#  test for calling too many times
 # yields void
 # Check for value on callback arguments
 # Give context to error messages
@@ -174,6 +174,45 @@ describe 'create_liar', ->
         arr[1].should.equal 'ho'
         done()
       , 300
+
+  describe 'Runs callback order', ->
+
+    liar = create_liar [
+      function_name: 'query'
+      yields_in_order: [
+        {
+          argument_3:
+            value: 'ninjas'
+        },
+        {
+          argument_2:
+            value: 'pirates'
+        }
+      ]
+    ]
+
+    it 'should call callbacks in turn', ->
+
+      arr = []
+      liar.query (dummy1, dummy2, str) ->
+        arr.push str
+
+      arr.length.should.equal 0
+      setTimeout () ->
+
+        arr[0].should.equal 'ninjas'
+        arr.length.should.equal 1
+
+        liar.query (dummy1, str) ->
+          arr.push str
+
+        setTimeout () ->
+          arr[1].should.equal 'pirates'
+        , 60
+
+      , 60
+
+
 
 
   it 'should support on_value for callback arguments', (done) ->
