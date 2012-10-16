@@ -7,7 +7,9 @@ create_liar = require './create_liar'
 # yield
 #  test for conflicts when calling order many times
 #  test for calling too many times
-# yields void
+#  delay
+#  yields must have value or on_value
+# yields with null
 # Check for value on callback arguments
 # Give context to error messages
 # times called
