@@ -179,21 +179,23 @@ describe 'create_liar', ->
 
   describe 'Runs callback order', ->
 
-    liar = create_liar [
-      function_name: 'query'
-      yields_in_order: [
-        {
-          argument_3:
-            value: 'ninjas'
-        },
-        {
-          argument_2:
-            value: 'pirates'
-        }
-      ]
-    ]
+
 
     it 'should call callbacks in turn', ->
+
+      liar = create_liar [
+        function_name: 'query'
+        yields_in_order: [
+          {
+            argument_3:
+              value: 'ninjas'
+          },
+          {
+            argument_2:
+              value: 'pirates'
+          }
+        ]
+      ]
 
       arr = []
       liar.query (dummy1, dummy2, str) ->
@@ -214,8 +216,45 @@ describe 'create_liar', ->
 
       , 60
 
+    it 'should work with multiple expectations', (done) ->
 
+      liar = create_liar [
+        {
+          function_name: 'count'
+          yields_in_order: [
+            {
+              argument_1:
+                value: 'one'
+            },
+            {
+              argument_1:
+                value: 'two'
+            }
+          ]
+        },{
+          function_name: 'bark',
+          yields_in_order: [
+            {
+              argument_1:
+                value: 'woof!'
+            },
+            {
+              argument_1:
+                value: 'ruff!'
+            }
+          ]
+        }
+      ]
 
+      liar.count (result) ->
+        result.should.equal 'one'
+        liar.bark (result) ->
+          result.should.equal 'woof!'
+          liar.count (result) ->
+            result.should.equal 'two'
+            liar.bark (result) ->
+              result.should.equal 'ruff!'
+              done()
 
   it 'should support on_value for callback arguments', (done) ->
 

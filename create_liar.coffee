@@ -1,5 +1,3 @@
-
-
 create_liar = (lies) ->
   injectLies {}, lies
 
@@ -53,14 +51,17 @@ filter_on_args = (lies, args_obj) ->
 
   lie for lie in lies when matches_args(lie)
 
-calls = 0
+
 
 run_callbacks = (lie, arguments_obj) ->
   callback = find_function arguments_obj
   return if not callback
 
   if lie.yields_in_order
-    run_yield lie.yields_in_order[calls++], callback
+    y = lie.yields_in_order
+    y.__calls = 0 if not y.__calls?
+    run_yield lie.yields_in_order[y.__calls++], callback
+
 
   if lie.yields_as_flow
     run_yield y, callback for y in lie.yields_as_flow
