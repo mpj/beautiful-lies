@@ -14,6 +14,7 @@ injectLies = (liar, lies) ->
   liar
 
 generateHandler = (function_name, lies) -> () ->
+
   matching_function = filter_on_function lies, function_name
   matching_arguments = filter_on_args matching_function, arguments
   lie = matching_arguments[0]
@@ -24,6 +25,7 @@ generateHandler = (function_name, lies) -> () ->
       message += "Possible: " +
                  args_as_array(lie.arguments).join(', ')
     throw new Error(message)
+
 
   run_callbacks lie, arguments
 
@@ -55,18 +57,26 @@ filter_on_args = (lies, args_obj) ->
 
 run_callbacks = (lie, arguments_obj) ->
   callback = find_function arguments_obj
-  return if not callback
 
   if lie.yields_in_order
-    y = lie.yields_in_order
-    y.__calls = 0 if not y.__calls?
-    run_yield lie.yields_in_order[y.__calls++], callback
+    yio = lie.yields_in_order
+    yio.__calls = 0 if not yio.__calls?
+    y = yio[yio.__calls++]
+    if not y?
+      m = "#{lie.function_name} was called #{yio.__calls} times, " +
+          "but only defined #{yio.length} yields_in_order."
+      throw new Error(m)
+    run_yield y, callback
 
 
   if lie.yields_as_flow
     run_yield y, callback for y in lie.yields_as_flow
 
 run_yield = (y, callback) ->
+  return if not callback # Sometimes, callback are not provided
+                         # but we generally want to behave as
+                         # if they we're executed.
+                         # TODO: Add log feedback when this happens.
   callback_arguments = callback_arguments_array y
   run_delayed this, callback, callback_arguments, 50
 

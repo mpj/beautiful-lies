@@ -5,8 +5,6 @@ create_liar = require './create_liar'
 
 # TODO
 # yield
-#  test for conflicts when calling order many times
-#  test for calling too many times
 #  delay
 #  yields must have value or on_value
 # yields with null
@@ -178,8 +176,6 @@ describe 'create_liar', ->
       , 300
 
   describe 'Runs callback order', ->
-
-
 
     it 'should call callbacks in turn', ->
 
@@ -378,4 +374,25 @@ describe 'Lie validation', ->
         returns: 9
       ]
     ).should.throw 'function_name must be a string.'
+
+  it 'should have a nice warning when too few yields', ->
+    (->
+      liar = create_liar [
+        function_name: 'kaboom'
+        yields_in_order: [
+          {
+            argument_1:
+              value: 'bam!'
+          },
+          {
+            argument_1:
+              value: 'boom!'
+          }
+        ]
+      ]
+      liar.kaboom(()->)
+      liar.kaboom() # Doesn't have a callback, but should still count.
+      liar.kaboom(()->)
+    ).should.throw 'kaboom was called 3 times, but only defined 2 yields_in_order.'
+
 
