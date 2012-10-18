@@ -252,6 +252,41 @@ describe 'create_liar', ->
               result.should.equal 'ruff!'
               done()
 
+    describe 'when yielding in order without any delay specified', ->
+
+      result = null
+      beforeEach (done) ->
+        liar = create_liar [
+          function_name: 'query'
+          yields_in_order: [
+            {
+              argument_1:
+                value: '47 ninjas'
+            }
+          ]
+        ]
+
+        liar.query (r) ->
+          result = r
+
+        done()
+
+      it 'should not have yielded after 49ms', (done) ->
+
+        setTimeout ->
+          should.not.exist result
+          done()
+        , 10
+
+      it 'should have yielded after 50ms', (done) ->
+
+        setTimeout ->
+          result.should.equal '47 ninjas'
+          done()
+        ,50
+
+
+
   it 'should support on_value for callback arguments', (done) ->
 
     liar = create_liar [
