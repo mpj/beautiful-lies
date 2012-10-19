@@ -387,7 +387,7 @@ describe 'Lie validation', ->
       liar = create_liar [
         function_name: 'something'
         returns:
-          values: 'somevalue' #spelled wrong!
+          values: 'somevalue' # <- spelled wrong, an "s" at the end!
       ]
       liar.something()
 
