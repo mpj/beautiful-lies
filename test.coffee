@@ -17,6 +17,7 @@ create_liar = require './create_liar'
 # Some kind of terminology to separate the caller and the callee
 #   crazy argument confusion in run_callback
 # yield is probably not the greatest word.
+# Test duplication!
 
 describe 'create_liar', ->
 
@@ -339,6 +340,27 @@ describe 'create_liar', ->
     ]
 
     liar.connect (err, connection) ->
+      connection.status.should.equal 'open'
+      connection.query().size.should.equal 72
+      done()
+
+  it 'Value should be implicit if on_value defined', (done) ->
+
+    liar = create_liar [
+      function_name: 'connect'
+      yields_as_flow: [
+        argument_2:
+          # Look ma, no value property!
+          on_value: [
+            function_name: 'query'
+            returns:
+              value:
+                size: 72
+          ]
+      ]
+    ]
+
+    liar.connect (err, connection) ->
       connection.query().size.should.equal 72
       done()
 
@@ -369,7 +391,7 @@ describe 'Lie validation', ->
       ]
       liar.something()
 
-    ).should.throw 'return statement must have property "value"'
+    ).should.throw 'returns object must have property "value" or "on_value"'
 
   it 'should validate that on_value is an array', ->
     (->

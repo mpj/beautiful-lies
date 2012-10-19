@@ -34,8 +34,10 @@ generateHandler = (function_name, lies) -> () ->
 
 inject_and_return = (return_lie) ->
   return null if not return_lie
-  if not return_lie.value?
-    throw new Error 'return statement must have property "value"'
+  if not return_lie.value? and not return_lie.on_value?
+    throw new Error('returns object must have property "value" or "on_value"')
+
+  return_lie.value ?= {}
   if return_lie.on_value?
     injectLies return_lie.value, return_lie.on_value
   return_lie.value
