@@ -78,7 +78,9 @@ run_yield = (y, callback) ->
                          # if they we're executed.
                          # TODO: Add log feedback when this happens.
   callback_arguments = callback_arguments_array y
-  run_delayed this, callback, callback_arguments, 50
+
+  y.delay ?= 50
+  run_delayed this, callback, callback_arguments, y.delay
 
 
 run_delayed = (thisObj, fn, args, delay) ->

@@ -5,7 +5,6 @@ create_liar = require './create_liar'
 
 # TODO
 # yield
-#  delay
 #  yields must have value or on_value
 # yields with null
 # Check for value on callback arguments
@@ -252,38 +251,73 @@ describe 'create_liar', ->
               result.should.equal 'ruff!'
               done()
 
-    describe 'when yielding in order without any delay specified', ->
 
-      result = null
-      beforeEach (done) ->
-        liar = create_liar [
-          function_name: 'query'
-          yields_in_order: [
-            {
-              argument_1:
-                value: '47 ninjas'
-            }
+
+    describe 'yeild delay', ->
+
+      describe 'when yielding in order without any delay specified', ->
+
+        result = null
+
+        beforeEach (done) ->
+          liar = create_liar [
+            function_name: 'query'
+            yields_in_order: [
+              {
+                argument_1:
+                  value: '47 ninjas'
+              }
+            ]
           ]
-        ]
-
-        liar.query (r) ->
-          result = r
-
-        done()
-
-      it 'should not have yielded after 49ms', (done) ->
-
-        setTimeout ->
-          should.not.exist result
+          liar.query (r) -> result = r
           done()
-        , 10
 
-      it 'should have yielded after 50ms', (done) ->
+        it 'should not have yielded after 49ms', (done) ->
 
-        setTimeout ->
-          result.should.equal '47 ninjas'
+          setTimeout ->
+            should.not.exist result
+            done()
+          , 10
+
+        it 'should have yielded after 50ms', (done) ->
+
+          setTimeout ->
+            result.should.equal '47 ninjas'
+            done()
+          , 50
+
+      describe 'when yielding with a delay of 237 ms', () ->
+
+
+        result = null
+        beforeEach (done) ->
+          liar = create_liar [
+            function_name: 'query'
+            yields_in_order: [
+              {
+                argument_1:
+                  value: '49 ninjas'
+                delay: 237
+              }
+            ]
+          ]
+          liar.query (r) ->
+            result = r
           done()
-        ,50
+
+        it 'should not have yielded after 236ms', (done) ->
+
+          setTimeout ->
+            should.not.exist result
+            done()
+          , 236
+
+        it 'should have yielded after 237ms', (done) ->
+
+          setTimeout ->
+            result.should.equal '49 ninjas'
+            done()
+          , 237
 
 
 
