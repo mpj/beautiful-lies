@@ -8,8 +8,8 @@ easy to *read*, *write* and *debug*.
 ## Expectation
 ```javascript
 {
-  function_called: 'collection',
-  with_arguments: [ 'members' ],
+  function_name: 'collection',
+  arguments: [ 'members' ],
   returns: /* RETURN BLOCK GOES HERE */
   yields_in_order: /* ARRAY OF YIELDS GOES HERE */
   yields_as_flow: /* ARRAY OF YIELDS GOES HERE*/
