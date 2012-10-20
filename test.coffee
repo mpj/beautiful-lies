@@ -4,6 +4,7 @@ expect      = chai.expect
 create_liar = require './create_liar'
 
 # TODO
+# Todo separate tests
 # yield
 #  yields must have value or on_value
 # yields with null
@@ -18,6 +19,11 @@ create_liar = require './create_liar'
 #   crazy argument confusion in run_callback
 # yield is probably not the greatest word.
 # Test duplication!
+# Implicit arrays
+# plugins
+  # yields_result plugin
+  # yeilds_error
+  # promise plugin
 
 describe 'create_liar', ->
 
