@@ -22,6 +22,30 @@ describe 'callback_result plugin', ->
       result.should.equal 'Four plus four is eight!'
       done()
 
+describe 'on_callback_result + callback_error_value plugin', ->
+
+  liar = {}
+
+  before ->
+    liar = create_liar [
+      function_name: 'connect'
+      on_callback_result: [
+        function_name: 'query'
+        callback_error_value:
+          type: 'ConnectionError'
+          message: 'Connection was terminated.'
+      ]
+
+    ]
+
+  it 'should behave as expected', (done) ->
+    liar.connect (error, connection) ->
+      connection.query (error, result) ->
+        error.type.should.equal 'ConnectionError'
+        error.message.should.equal 'Connection was terminated.'
+        done()
+
+
 describe 'callback_error plugin', ->
 
   liar = {}
@@ -30,7 +54,7 @@ describe 'callback_error plugin', ->
 
     liar = create_liar [
       function_name: 'bark_async'
-      callback_error: {
+      callback_error_value: {
         message: 'Cats cannot bark!'
       }
     ]

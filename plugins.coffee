@@ -5,11 +5,18 @@ module.exports =
       argument_2: obj
     ]
 
-  callback_error: (obj) ->
+  on_callback_result: (obj) ->
+    yields_in_order: [
+      argument_2:
+        on_value: obj
+    ]
+
+  callback_error_value: (obj) ->
     yields_in_order: [
       argument_1:
         value: obj
     ]
+
 
   promise_done: (obj) ->
     returns:
