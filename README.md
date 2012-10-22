@@ -4,38 +4,31 @@ Beautiful Lies
 Test doubles for asynchronous javascript that are
 easy to *read*, *write* and *debug*.
 
-## Syntax
-
-### Basic example:
+#### Let's say you want to mock this...
 ```javascript
-var db = create_liar([{
-  function_name: 'connect',
-  yields_in_order: {
-    argument_2: {
-      on_value: [{
-        function_name: 'query',
-        yields_in_order: [{
-          argument_1: {
-            type: 'TimeoutError',
-            message: 'The query timed out.'
-          },
-          delay: 1000
-        }]
-      }]
-    }
-  }
-}])
-
-// The code below will output
-// "The query timed out" after 1000ms.
 db.connect(function(err, connection) {
   connection.query(function(err, result) {
     console.log(err.message);
   })
 })
-
 ```
 
+```javascript
+var db = create_liar([{
+  function_name: 'connect',
+  callback_result: {
+    on_value: [{
+      function_name: 'query',
+      callback_error: {
+        value: {
+          type: 'TimeoutError',
+          message: 'The query timed out.'
+        }
+      }]
+    }]
+  }
+}])
+```
 
 ### Expectation object
 ```javascript
