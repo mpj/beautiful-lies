@@ -13,24 +13,29 @@ injectLies = (liar, lies) ->
       generateHandler lie.function_name, lies
   liar
 
-generateHandler = (function_name, lies) -> () ->
+generateHandler = (function_name, lies) ->
 
-  matching_function = filter_on_function lies, function_name
-  matching_arguments = filter_on_args matching_function, arguments
-  lie = matching_arguments[0]
-  if not lie
-    message = "funkyFunction called with unexpected arguments. " +
-              "Actual: " + args_as_array(arguments).join(', ')
-    for lie in matching_function
-      message += "Possible: " +
-                 args_as_array(lie.arguments).join(', ')
-    throw new Error(message)
+  handler = () ->
+    matching_function = filter_on_function lies, function_name
+    matching_arguments = filter_on_args matching_function, arguments
+    lie = matching_arguments[0]
+    if not lie
+      message = "funkyFunction called with unexpected arguments. " +
+                "Actual: " + args_as_array(arguments).join(', ')
+      for lie in matching_function
+        message += "Possible: " +
+                   args_as_array(lie.arguments).join(', ')
+      throw new Error(message)
 
+    run_callbacks lie, arguments
 
-  run_callbacks lie, arguments
+    handler.times_called++
 
-  if lie.returns?
-    inject_and_return lie.returns
+    if lie.returns?
+      inject_and_return lie.returns
+
+  handler.times_called = 0
+  return handler
 
 inject_and_return = (return_lie) ->
   return null if not return_lie
