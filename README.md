@@ -24,6 +24,11 @@ db.connect().done(function() {
 })
 ```
 
+## Syntax
+
+Liars are generated using a basic hierarchial JSON-based language,
+that has three basic types of building blocks - expectations, results and yields:
+
 ### Expectation object
 ```javascript
 {
@@ -52,6 +57,10 @@ db.connect().done(function() {
 }
 ```
 
+
+## Plugins
+Expectations, results and yields are buildings blocks that can be used to construct plugins (on_promise_done is a plugin, for instance). Check out the built in plugins here, for inspiration:
+https://github.com/mpj/beautiful_lies/blob/master/plugins.coffee
 
 
 
