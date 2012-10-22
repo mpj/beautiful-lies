@@ -4,30 +4,25 @@ Beautiful Lies
 Test doubles for asynchronous javascript that are
 easy to *read*, *write* and *debug*.
 
-#### Let's say you want to mock this...
-```javascript
-db.connect(function(err, connection) {
-  connection.query(function(err, result) {
-    console.log(err.message);
-  })
-})
-```
-
+#### Create a test double ...
 ```javascript
 var db = create_liar([{
   function_name: 'connect',
-  callback_result: {
-    on_value: [{
-      function_name: 'query',
-      callback_error: {
-        value: {
-          type: 'TimeoutError',
-          message: 'The query timed out.'
-        }
-      }]
-    }]
-  }
+  on_promise_done: [{
+    function_name: 'query',
+    promise_fail_value: {
+      message: 'The query timed out.'
+    }
+  }]
 }])
+```
+
+```javascript
+db.connect().done(function() {
+  db.query().fail(function(error) {
+    console.log(error.message); // <-- Will output 'The query timed out.'
+  })
+})
 ```
 
 ### Expectation object
