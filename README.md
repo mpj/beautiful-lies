@@ -61,6 +61,7 @@ db.connect(function(err, connection) {
 {
   argument_1: /* RESULT OBJECT GOES HERE */
   argument_2: /* RESULT OBJECT GOES HERE*/,
+  delay: 1000
 }
 ```
 
