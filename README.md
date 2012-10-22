@@ -16,7 +16,7 @@ var db = create_liar([{
   }]
 }])
 ```
-
+#### And call it ...
 ```javascript
 db.connect().done(function() {
   db.query().fail(function(error) {
