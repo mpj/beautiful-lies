@@ -4,19 +4,51 @@ Beautiful Lies
 Test doubles for asynchronous javascript that are
 easy to *read*, *write* and *debug*.
 
+## Syntax
 
-## Expectation
+### Basic example:
+```javascript
+var db = create_liar([{
+  function_name: 'connect',
+  yields_in_order: {
+    argument_2: {
+      on_value: [{
+        function_name: 'query',
+        yields_in_order: [{
+          argument_1: {
+            type: 'TimeoutError',
+            message: 'The query timed out.'
+          },
+          delay: 1000
+        }]
+      }]
+    }
+  }
+}])
+
+// The code below will output
+// "The query timed out" after 1000ms.
+db.connect(function(err, connection) {
+  connection.query(function(err, result) {
+    console.log(err.message);
+  })
+})
+
+```
+
+
+### Expectation object
 ```javascript
 {
   function_name: 'collection',
   arguments: [ 'members' ],
-  returns: /* RETURN BLOCK GOES HERE */
-  yields_in_order: /* ARRAY OF YIELDS GOES HERE */
-  yields_as_flow: /* ARRAY OF YIELDS GOES HERE*/
+  returns: /* RESULT OBJECT GOES HERE */
+  yields_in_order: /* ARRAY OF YIELD OBJECTS GOES HERE */
+  yields_as_flow: /* ARRAY OF YIELD OBJECTS GOES HERE*/
 }
 ```
 
-## Return block
+### Result object
 ```javascript
 {
   value: { someProperty: 5 }
@@ -24,12 +56,11 @@ easy to *read*, *write* and *debug*.
 },
 ```
 
-## Yield
+### Yield object
 ```javascript
 {
-  argument_1st: /* RETURN BLOCK GOES HERE */
-  argument_2nd: /* RETURN BLOCK GOES HERE*/,
-  on_3rd_argument: /* ARRAY OF EXPECTATIONS GOES HERE */
+  argument_1: /* RESULT OBJECT GOES HERE */
+  argument_2: /* RESULT OBJECT GOES HERE*/,
 }
 ```
 
