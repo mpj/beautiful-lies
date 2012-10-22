@@ -1,6 +1,9 @@
 create_liar = (lies) ->
   injectLies {}, lies
 
+# Inject built-in plugins
+create_liar.plugins = require './plugins'
+
 injectLies = (liar, lies) ->
   if not Array.isArray lies
     throw new Error "lies must be an array."
@@ -147,6 +150,6 @@ args_as_array = (arguments_obj) ->
   # to a normal array.
   arg for arg in arguments_obj
 
-create_liar.plugins = {}
+
 
 module.exports = create_liar
