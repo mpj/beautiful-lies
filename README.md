@@ -1,7 +1,7 @@
 Beautiful Lies
 ==============
 
-Test doubles for asynchronous javascript that are easy on the eyes.
+Test doubles for asynchronous JavaScript that are easy on the eyes.
 
 #### Create a test double ...
 ```javascript
