@@ -9,9 +9,20 @@ injectLies = (liar, lies) ->
       throw new Error 'lies must have property "function_name"'
     if typeof lie.function_name isnt 'string'
       throw new Error 'function_name must be a string.'
+
+    injectPlugins lie
+
     liar[lie.function_name] =
       generateHandler lie.function_name, lies
   liar
+
+injectPlugins = (lie) ->
+  for key, value of lie
+    if create_liar.plugins[key]
+      delete lie[key]
+      generated = create_liar.plugins[key](value)
+      for key, value of generated
+        lie[key] = generated[key]
 
 generateHandler = (function_name, lies) ->
 
@@ -135,5 +146,7 @@ args_as_array = (arguments_obj) ->
   # Convert that pesky function arguments object
   # to a normal array.
   arg for arg in arguments_obj
+
+create_liar.plugins = {}
 
 module.exports = create_liar
