@@ -26,6 +26,25 @@ describe 'call validation', ->
 
       sword.cut.times_called.should.equal 3
 
+  describe 'when called with varying arguments', ->
+
+    beforeEach ->
+      sword.cut 'left', 'right'
+      sword.cut()
+      sword.cut 'down'
+
+    it 'should have the right amount of times_called', ->
+      sword.cut.times_called.should.equal 3
+
+    it 'should be possible to check if it was called with two args', ->
+      sword.cut.called_with('left', 'right').should.equal true
+
+    it 'should be possible to check if it was NOT called with two args', ->
+      sword.cut.called_with('diagonally', 'right').should.equal false
+
+
+
+
 
 
 

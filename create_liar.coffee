@@ -29,26 +29,38 @@ injectPlugins = (lie) ->
 
 generateHandler = (function_name, lies) ->
 
+
   handler = () ->
-    matching_function = filter_on_function lies, function_name
-    matching_arguments = filter_on_args matching_function, arguments
-    lie = matching_arguments[0]
-    if not lie
-      message = "funkyFunction called with unexpected arguments. " +
-                "Actual: " + args_as_array(arguments).join(', ')
-      for lie in matching_function
-        message += "Possible: " +
-                   args_as_array(lie.arguments).join(', ')
-      throw new Error(message)
+
+    lies_matching_function = filter_on_function lies, function_name
+
+    if lies_matching_function.length is 1 and not lies_matching_function[0].arguments?
+      lie = lies_matching_function[0]
+    else
+      lies_matching_args = filter_on_args lies_matching_function, arguments
+      lie = lies_matching_args[0]
+      if not lie
+        message = "funkyFunction called with unexpected arguments. " +
+                  "Actual: " + args_as_array(arguments).join(', ')
+        for lie in lies_matching_function
+          message += "Possible: " + args_as_array(lie.arguments).join(', ')
+        throw new Error(message)
 
     run_callbacks lie, arguments
 
     handler.times_called++
+    handler.call_arguments.push(args_as_array(arguments))
 
     if lie.returns?
       inject_and_return lie.returns
 
   handler.times_called = 0
+  handler.call_arguments = []
+  handler.called_with = (args...) ->
+    for call in handler.call_arguments
+      if arrays_equal call, args
+        return true
+    return false
   return handler
 
 inject_and_return = (return_lie) ->
@@ -134,6 +146,7 @@ callback_arguments_array = (yield_spec) ->
   if args.length > 0 then args else null
 
 arrays_equal = (a, b) ->
+  return false if a? isnt b? or a.length isnt b.length
   for item, i in a
     return false if item isnt b[i]
   true
@@ -148,6 +161,8 @@ is_function = (obj) ->
 args_as_array = (arguments_obj) ->
   # Convert that pesky function arguments object
   # to a normal array.
+  if not arguments_obj?
+    return []
   arg for arg in arguments_obj
 
 
