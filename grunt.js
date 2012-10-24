@@ -5,7 +5,7 @@ module.exports = function(grunt) {
       banner:
         '// Beautiful Lies\n' +
         '// version: <%= pkg.version %>\n' +
-        '// author: <%= pkg.author %>\n' +
+        '// author: <%= pkg.author.name %>\n' +
         '// license: <%= pkg.license %>'
     },
     simplemocha: {
