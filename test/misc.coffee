@@ -3,12 +3,11 @@ should      = chai.should()
 expect      = chai.expect
 create_liar = require '../create_liar'
 
-# FIXME WHY DOES THIS FAIL IF changed to YIELDS IN ORDER?
 it 'Value should be implicit if on_value defined', (done) ->
 
   liar = create_liar [
     function_name: 'connect'
-    yields_as_flow: [
+    run_callback_flow: [
       argument_2:
         # Look ma, no value property!
         on_value: [

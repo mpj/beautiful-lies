@@ -3,11 +3,11 @@ should      = chai.should()
 expect      = chai.expect
 create_liar = require '../create_liar'
 
-describe 'yields_as_flow', ->
+describe 'run_callback_flow', ->
 
   liar = create_liar [
     function_name: 'query'
-    yields_as_flow: [
+    run_callback_flow: [
       {
         argument_1:
           value: 'hey'

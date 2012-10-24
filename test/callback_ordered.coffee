@@ -7,7 +7,7 @@ describe 'Runs callback', ->
 
   liar = create_liar [
     function_name: 'connect'
-    yields_in_order: [
+    run_callback: [
       argument_2:
         value: 'connected'
     ]
@@ -23,7 +23,7 @@ describe 'Runs callback with error arguments', ->
 
   liar = create_liar [
     function_name: 'query'
-    yields_in_order: [
+    run_callback: [
       argument_1:
         value:
           message: 'Your query was malformed!'
@@ -40,7 +40,7 @@ describe 'Runs callback with dual arguments', ->
 
   liar = create_liar [
     function_name: 'query'
-    yields_in_order: [
+    run_callback: [
       argument_2:
         value: 3
       argument_3:
@@ -63,7 +63,7 @@ describe 'Runs callback order', ->
 
     liar = create_liar [
       function_name: 'query'
-      yields_in_order: [
+      run_callback: [
         {
           argument_3:
             value: 'ninjas'
@@ -99,7 +99,7 @@ describe 'Runs callback order', ->
     liar = create_liar [
       {
         function_name: 'count'
-        yields_in_order: [
+        run_callback: [
           {
             argument_1:
               value: 'one'
@@ -111,7 +111,7 @@ describe 'Runs callback order', ->
         ]
       },{
         function_name: 'bark',
-        yields_in_order: [
+        run_callback: [
           {
             argument_1:
               value: 'woof!'
@@ -138,14 +138,14 @@ describe 'Runs callback order', ->
 
   describe 'yeild delay', ->
 
-    describe 'when yielding in order without any delay specified', ->
+    describe 'when running callback without any delay specified', ->
 
       result = null
 
       beforeEach (done) ->
         liar = create_liar [
           function_name: 'query'
-          yields_in_order: [
+          run_callback: [
             {
               argument_1:
                 value: '47 ninjas'
@@ -155,28 +155,28 @@ describe 'Runs callback order', ->
         liar.query (r) -> result = r
         done()
 
-      it 'should not have yielded after 49ms', (done) ->
+      it 'should not have called back after 49ms', (done) ->
 
         setTimeout ->
           should.not.exist result
           done()
         , 10
 
-      it 'should have yielded after 50ms', (done) ->
+      it 'should have callbed back after 50ms', (done) ->
 
         setTimeout ->
           result.should.equal '47 ninjas'
           done()
         , 50
 
-    describe 'when yielding with a delay of 237 ms', () ->
+    describe 'when calling back with a delay of 237 ms', () ->
 
 
       result = null
       beforeEach (done) ->
         liar = create_liar [
           function_name: 'query'
-          yields_in_order: [
+          run_callback: [
             {
               argument_1:
                 value: '49 ninjas'
@@ -188,14 +188,14 @@ describe 'Runs callback order', ->
           result = r
         done()
 
-      it 'should not have yielded after 236ms', (done) ->
+      it 'should not have called back after 236ms', (done) ->
 
         setTimeout ->
           should.not.exist result
           done()
         , 236
 
-      it 'should have yielded after 237ms', (done) ->
+      it 'should have called back after 237ms', (done) ->
 
         setTimeout ->
           result.should.equal '49 ninjas'
@@ -208,7 +208,7 @@ it 'should support on_value for callback arguments', (done) ->
 
   liar = create_liar [
     function_name: 'connect'
-    yields_in_order: [
+    run_callback: [
       argument_2:
         value:
           status: 'open'
@@ -228,11 +228,11 @@ it 'should support on_value for callback arguments', (done) ->
 
 describe 'Syntax checking', ->
 
-  it 'should have a nice warning when too few yields', ->
+  it 'should have a nice warning when too few callbacks', ->
     (->
       liar = create_liar [
         function_name: 'kaboom'
-        yields_in_order: [
+        run_callback: [
           {
             argument_1:
               value: 'bam!'
@@ -246,7 +246,7 @@ describe 'Syntax checking', ->
       liar.kaboom(()->)
       liar.kaboom() # Doesn't have a callback, but should still count.
       liar.kaboom(()->)
-    ).should.throw 'kaboom was called 3 times, but only defined 2 yields_in_order.'
+    ).should.throw 'kaboom was called 3 times, but only defined 2 run_callback.'
 
   it 'should validate that arguments is an array (on_value)', ->
     (->

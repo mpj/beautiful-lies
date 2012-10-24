@@ -91,21 +91,20 @@ filter_on_args = (lies, args_obj) ->
 run_callbacks = (lie, arguments_obj) ->
   callback = find_function arguments_obj
 
-  if lie.yields_in_order
-    yio = lie.yields_in_order
-    yio.__calls = 0 if not yio.__calls?
-    y = yio[yio.__calls++]
+  if lie.run_callback
+    lie.__calls = 0 if not lie.__calls?
+    y = lie.run_callback[lie.__calls++]
     if not y?
-      m = "#{lie.function_name} was called #{yio.__calls} times, " +
-          "but only defined #{yio.length} yields_in_order."
+      m = "#{lie.function_name} was called #{lie.__calls} times, " +
+          "but only defined #{lie.run_callback.length} run_callback."
       throw new Error(m)
-    run_yield y, callback
+    run_callback y, callback
 
 
-  if lie.yields_as_flow
-    run_yield y, callback for y in lie.yields_as_flow
+  if lie.run_callback_flow
+    run_callback y, callback for y in lie.run_callback_flow
 
-run_yield = (y, callback) ->
+run_callback = (y, callback) ->
   return if not callback # Sometimes, callback are not provided
                          # but we generally want to behave as
                          # if they we're executed.
@@ -127,17 +126,17 @@ find_function = (arguments_obj) ->
     return arg if is_function(arg)
   null
 
-callback_arguments_array = (yield_spec) ->
+callback_arguments_array = (run_callback_spec) ->
   args = []
   highest_index = 0
 
   # TODO perhaps use the funky coffescript Comprehensions here
   # to create a matches array
-  for property_name of yield_spec
+  for property_name of run_callback_spec
     match = /argument_(\d+)/.exec property_name
     if match?
       index = parseInt(match[1]) - 1
-      args[index] = inject_and_return(yield_spec[property_name])
+      args[index] = inject_and_return(run_callback_spec[property_name])
       highest_index = index if index > highest_index
 
   # fill em up

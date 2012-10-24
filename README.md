@@ -27,39 +27,39 @@ db.connect().done(function() {
 ## Syntax
 
 Liars are generated using a basic hierarchial JSON-based language,
-that has three basic types of building blocks - expectations, results and yields:
+that has three basic types of building blocks - expectations specs, result specs and callback specs:
 
-### Expectation object
+### Expectation spec
 ```javascript
 {
   function_name: 'collection',
   arguments: [ 'members' ],
-  returns: /* RESULT OBJECT GOES HERE */
-  yields_in_order: /* ARRAY OF YIELD OBJECTS GOES HERE */
-  yields_as_flow: /* ARRAY OF YIELD OBJECTS GOES HERE*/
+  returns: /* RESULT SPEC GOES HERE */
+  run_callback: /* ARRAY OF CALLBACK SPECS GOES HERE */
+  run_callback_flow: /* ARRAY OF CALLBACK SPECS GOES HERE*/
 }
 ```
 
-### Result object
+### Result spec
 ```javascript
 {
   value: { someProperty: 5 }
-  on_value: /* ARRAY OF EXPECTATIONS GOES HERE */
+  on_value: /* ARRAY OF EXPECTATION SPECS GOES HERE */
 },
 ```
 
-### Yield object
+### Callback spec
 ```javascript
 {
-  argument_1: /* RESULT OBJECT GOES HERE */
-  argument_2: /* RESULT OBJECT GOES HERE*/,
+  argument_1: /* RESULT SPEC GOES HERE */
+  argument_2: /* RESULT SPEC GOES HERE*/,
   delay: 1000
 }
 ```
 
 
 ## Plugins
-Expectations, results and yields are buildings blocks that can be used to construct plugins (on_promise_done is a plugin, for instance). Check out the built in plugins here, for inspiration:
+Expectations, results and callback object are buildings blocks that can be used to construct plugins (on_promise_done is a plugin, for instance). Check out the built in plugins here, for inspiration:
 https://github.com/mpj/beautiful_lies/blob/master/plugins.coffee
 
 
