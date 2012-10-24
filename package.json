@@ -1,8 +1,12 @@
 {
   "name": "beautiful_lies",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "url": "https://github.com/mpj/beautiful_lies",
-  "author": "Mattias Petter Johansson <mpj@mpj.me>",
+  "author": {
+    "name": "Mattias Petter Johansson",
+    "email": "mpj@mpj.me",
+    "url": "http://mpj.me"
+  },
   "description": "Test doubles for asynchronous JavaScript that are easy on the eyes.",
   "main": "create_liar.coffee",
   "dependencies": {},
@@ -12,7 +16,8 @@
     "chai": "~1.2.0",
     "growl": "~1.5.1",
     "grunt": "~0.3.17",
-    "grunt-simple-mocha": "~0.2.0"
+    "grunt-simple-mocha": "~0.2.0",
+    "grunt-bump": "~0.0.1"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --reporter spec"
@@ -32,6 +37,5 @@
     "unit",
     "test"
   ],
-  "author": "Mattias Petter Johansson",
   "license": "MIT"
 }

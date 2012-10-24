@@ -22,6 +22,7 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-simple-mocha');
+  grunt.loadNpmTasks('grunt-bump');
 
   grunt.registerTask('compile', 'Compiles CoffeeScript source into JavaScript.', function(){
     var coffee = require('coffee-script');
