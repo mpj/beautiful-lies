@@ -1,6 +1,6 @@
 {
   "name": "beautiful_lies",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "url": "https://github.com/mpj/beautiful_lies",
   "author": "Mattias Petter Johansson <mpj@mpj.me>",
   "description": "Test doubles for asynchronous JavaScript that are easy on the eyes.",
