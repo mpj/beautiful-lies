@@ -110,17 +110,17 @@ describe 'on_promise_done plugin', ->
 
 describe 'promise_done_value plugin', ->
 
-  liar = {}
+  cat = {}
 
   before ->
 
-    liar = create_liar [
+    cat = create_liar [
       function_name: 'meow_async'
       promise_done_value: 'Meow!'
     ]
 
   it 'should behave as expected', (done) ->
-    liar.meow_async().done (result) ->
+    cat.meow_async().done (result) ->
       result.should.equal 'Meow!'
       done()
 
@@ -128,33 +128,33 @@ describe 'promise_done_value plugin', ->
 
 describe 'promise_fail plugin', ->
 
-  liar = {}
+  dog = {}
 
   before ->
 
-    liar = create_liar [
+    dog = create_liar [
       function_name: 'meow_async'
       promise_fail:
         value: "Dogs don't meow!"
     ]
 
   it 'should behave as expected', (done)->
-    liar.meow_async().fail (error) ->
+    dog.meow_async().fail (error) ->
       error.should.equal "Dogs don't meow!"
       done()
 
 describe 'promise_fail_value plugin', ->
 
-  liar = {}
+  dog = {}
 
   before ->
 
-    liar = create_liar [
+    dog = create_liar [
       function_name: 'meow_async'
       promise_fail_value: "Dogs don't meow!"
     ]
 
   it 'should behave as expected', (done)->
-    liar.meow_async().fail (error) ->
+    dog.meow_async().fail (error) ->
       error.should.equal "Dogs don't meow!"
       done()
