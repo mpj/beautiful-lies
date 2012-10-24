@@ -1,5 +1,7 @@
 # Dangerously fast way to publish a patch to NPM
 set -e # Stop if anything fails
+echo "Enter your npmjs.org credentials."
+npm adduser
 npm install
 ./build.sh
 VERSION=`./node_modules/grunt/bin/grunt bump:patch |  grep -no 'to .*$' | cut -c 6-`;
