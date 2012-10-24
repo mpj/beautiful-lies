@@ -7,11 +7,15 @@
   "main": "create_liar.coffee",
   "dependencies": {},
   "devDependencies": {
+    "mocha": "~1.6.0",
+    "coffee-script": "~1.4.0",
     "chai": "~1.2.0",
-    "growl": "~1.5.1"
+    "growl": "~1.5.1",
+    "grunt": "~0.3.17",
+    "grunt-simple-mocha": "~0.2.0"
   },
   "scripts": {
-    "test": "./watch"
+    "test": "./node_modules/mocha/bin/mocha --reporter spec"
   },
   "repository": {
     "type": "git",
