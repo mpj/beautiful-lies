@@ -8,7 +8,7 @@
     "url": "http://mpj.me"
   },
   "description": "Test doubles for asynchronous JavaScript that are easy on the eyes.",
-  "main": "create_liar.coffee",
+  "main": "lib/create_liar.js",
   "dependencies": {},
   "devDependencies": {
     "mocha": "~1.6.0",
