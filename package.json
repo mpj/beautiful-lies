@@ -1,7 +1,7 @@
 {
-  "name": "beautiful_lies",
+  "name": "beautiful-lies",
   "version": "0.2.4",
-  "url": "https://github.com/mpj/beautiful_lies",
+  "url": "https://github.com/mpj/beautiful-lies",
   "author": {
     "name": "Mattias Petter Johansson",
     "email": "mpj@mpj.me",
@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/mpj/beautiful_lies.git"
+    "url": "git://github.com/mpj/beautiful-lies.git"
   },
   "keywords": [
     "mock",
