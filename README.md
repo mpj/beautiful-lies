@@ -60,7 +60,7 @@ that has three basic types of building blocks - expectations specs, result specs
 
 ## Plugins
 Expectations, results and callback object are buildings blocks that can be used to construct plugins (on_promise_done is a plugin, for instance). Check out the built in plugins here, for inspiration:
-https://github.com/mpj/beautiful_lies/blob/master/plugins.coffee
+https://github.com/mpj/beautiful-lies/blob/master/plugins.coffee
 
 
 
