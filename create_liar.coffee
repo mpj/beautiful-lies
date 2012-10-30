@@ -92,8 +92,13 @@ run_callbacks = (lie, arguments_obj) ->
   callback = find_function arguments_obj
 
   if lie.run_callback
-    lie.__calls = 0 if not lie.__calls?
-    y = lie.run_callback[lie.__calls++]
+
+    if lie.run_callback.length is 1
+      y = lie.run_callback[0]
+    else
+      lie.__calls = 0 if not lie.__calls?
+      y = lie.run_callback[lie.__calls++]
+
     if not y?
       m = "#{lie.function_name} was called #{lie.__calls} times, " +
           "but only defined #{lie.run_callback.length} run_callback."

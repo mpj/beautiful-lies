@@ -248,6 +248,21 @@ describe 'Syntax checking', ->
       liar.kaboom(()->)
     ).should.throw 'kaboom was called 3 times, but only defined 2 run_callback.'
 
+  it 'should not display the nice warning when there is only a single callback result', (done) ->
+    liar = create_liar [
+      function_name: 'shoot',
+      run_callback: [{
+        argument_1:
+          value: 'pew!'
+      }]
+    ]
+
+    liar.shoot (res) ->
+      res.should.equal 'pew!'
+      liar.shoot (res) ->
+        res.should.equal 'pew!'
+        done()
+
   it 'should validate that arguments is an array (on_value)', ->
     (->
       liar = create_liar [
