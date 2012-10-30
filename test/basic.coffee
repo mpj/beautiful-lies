@@ -17,6 +17,18 @@ describe 'create_liar', ->
     liar.someFunction().should.deep.equal
       someProperty: 5
 
+  it 'should treat a single object the same was as an array of one', ->
+
+    liar = create_liar # Look ma, no array!
+      function_name: 'someFunction'
+      returns:
+        value:
+          someProperty: 5
+
+    liar.someFunction().should.deep.equal
+      someProperty: 5
+
+
   describe 'arguments provided', ->
 
     liar = create_liar [
@@ -96,6 +108,8 @@ it 'should match to right lie if multiple per function', ->
   liar.add(5,4).should.equal 9
 
 
+
+
 describe 'Syntax checking', ->
 
   it 'should validate that return has a value property', ->
@@ -108,13 +122,6 @@ describe 'Syntax checking', ->
       liar.something()
 
     ).should.throw 'returns object must have property "value" or "on_value"'
-
-  it 'should validate that root is an array', ->
-    (->
-      liar = create_liar
-        function_name: 'do_stuff'
-      liar.do_stuff()
-    ).should.throw 'lies must be an array.'
 
   it 'should validate function_name of root', ->
     (->

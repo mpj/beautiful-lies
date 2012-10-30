@@ -5,8 +5,7 @@ create_liar = (lies) ->
 create_liar.plugins = require './plugins'
 
 injectLies = (liar, lies) ->
-  if not Array.isArray lies
-    throw new Error "lies must be an array."
+  lies = [ lies ] if not Array.isArray lies
   for lie in lies
     if not lie.function_name?
       throw new Error 'lies must have property "function_name"'
@@ -91,13 +90,18 @@ filter_on_args = (lies, args_obj) ->
 run_callbacks = (lie, arguments_obj) ->
   callback = find_function arguments_obj
 
-  if lie.run_callback
+  callback_chain = lie.run_callback;
 
-    if lie.run_callback.length is 1
-      y = lie.run_callback[0]
+  if callback_chain
+
+    callback_chain = [ callback_chain ] if not Array.isArray callback_chain
+
+    # FIXME: Better variable name for y
+    if callback_chain.length is 1
+      y = callback_chain[0]
     else
       lie.__calls = 0 if not lie.__calls?
-      y = lie.run_callback[lie.__calls++]
+      y = callback_chain[lie.__calls++]
 
     if not y?
       m = "#{lie.function_name} was called #{lie.__calls} times, " +

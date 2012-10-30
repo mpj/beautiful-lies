@@ -19,6 +19,21 @@ describe 'Runs callback', ->
       status.should.equal 'connected'
       done()
 
+describe 'Runs callback (result object instead of array of result object)', ->
+
+  liar = create_liar [
+    function_name: 'connect'
+    run_callback:
+      argument_2:
+        value: 'connected'
+  ]
+
+  it 'should run callback', (done) ->
+
+    liar.connect (err, status) ->
+      status.should.equal 'connected'
+      done()
+
 describe 'Runs callback with error arguments', ->
 
   liar = create_liar [
@@ -226,6 +241,28 @@ it 'should support on_value for callback arguments', (done) ->
     connection.query().size.should.equal 72
     done()
 
+it 'should treat simple objects to on_value the same way as an array with 1 item', (done) ->
+
+  liar = create_liar [
+    function_name: 'connect'
+    run_callback: [
+      argument_2:
+        value:
+          status: 'open'
+        on_value: # Same as the above test, but with no array
+                  # passed to on_value.
+          function_name: 'query'
+          returns:
+            value:
+              size: 72
+    ]
+  ]
+
+  liar.connect (err, connection) ->
+    connection.status.should.equal 'open'
+    connection.query().size.should.equal 72
+    done()
+
 describe 'Syntax checking', ->
 
   it 'should have a nice warning when too few callbacks', ->
@@ -292,14 +329,3 @@ describe 'Syntax checking', ->
       liar.do_stuff()
     ).should.throw 'lies must have property "function_name"'
 
-  it 'should validate that on_value is an array', ->
-    (->
-      liar = create_liar [
-        function_name: 'do_stuff'
-        returns:
-          value: {},
-          on_value:
-            function_name: 'do_more_stuff'
-      ]
-      liar.do_stuff()
-    ).should.throw 'lies must be an array.'
