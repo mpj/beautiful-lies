@@ -3,8 +3,8 @@ set -e # Stop if anything fails
 echo "Enter your npmjs.org credentials."
 npm adduser
 npm install
-./build.sh
 VERSION=`./node_modules/grunt/bin/grunt bump:patch |  grep -no 'to .*$' | cut -c 6-`;
+./build.sh
 git add package.json
 git add lib/*.js
 git commit -m "Bumped version number to "$VERSION"."
