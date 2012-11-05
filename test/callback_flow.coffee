@@ -1,11 +1,13 @@
 chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
-create_liar = require '../create_liar'
+
+lies        = require '../beautiful-lies'
+createLiar = lies.createLiar
 
 describe 'run_callback_flow', ->
 
-  liar = create_liar [
+  liar = createLiar [
     function_name: 'query'
     run_callback_flow: [
       {
@@ -27,4 +29,4 @@ describe 'run_callback_flow', ->
       arr[0].should.equal 'hey'
       arr[1].should.equal 'ho'
       done()
-    , 300
+    , 400

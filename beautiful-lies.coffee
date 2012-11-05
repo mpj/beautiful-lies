@@ -28,7 +28,6 @@ injectPlugins = (lie) ->
 
 generateHandler = (function_name, lies) ->
 
-
   handler = () ->
 
     lies_matching_function = filter_on_function lies, function_name
@@ -175,4 +174,4 @@ args_as_array = (arguments_obj) ->
 
 
 
-module.exports = create_liar
+module.exports.createLiar = create_liar

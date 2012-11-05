@@ -1,7 +1,9 @@
 chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
-create_liar = require '../create_liar'
+
+lies        = require '../beautiful-lies'
+createLiar  = lies.createLiar
 
 describe 'callback_result plugin', ->
 
@@ -9,7 +11,7 @@ describe 'callback_result plugin', ->
 
   before ->
 
-    liar = create_liar [
+    liar = createLiar [
       function_name: 'count_async'
       callback_result: {
         value: 'Four plus four is eight!'
@@ -27,7 +29,7 @@ describe 'on_callback_result + callback_error_value plugin', ->
   liar = {}
 
   before ->
-    liar = create_liar [
+    liar = createLiar [
       function_name: 'connect'
       on_callback_result: [
         function_name: 'query'
@@ -52,7 +54,7 @@ describe 'callback_error plugin', ->
 
   before ->
 
-    liar = create_liar [
+    liar = createLiar [
       function_name: 'bark_async'
       callback_error_value: {
         message: 'Cats cannot bark!'
@@ -71,7 +73,7 @@ describe 'promise_done plugin', ->
 
   before ->
 
-    liar = create_liar [
+    liar = createLiar [
       function_name: 'connect'
       promise_done:
         on_value: [
@@ -93,7 +95,7 @@ describe 'on_promise_done plugin', ->
 
   before ->
 
-    liar = create_liar [
+    liar = createLiar [
       function_name: 'connect'
       on_promise_done: [
         function_name: 'query'
@@ -114,7 +116,7 @@ describe 'promise_done_value plugin', ->
 
   before ->
 
-    cat = create_liar [
+    cat = createLiar [
       function_name: 'meow_async'
       promise_done_value: 'Meow!'
     ]
@@ -132,7 +134,7 @@ describe 'promise_fail plugin', ->
 
   before ->
 
-    dog = create_liar [
+    dog = createLiar [
       function_name: 'meow_async'
       promise_fail:
         value: "Dogs don't meow!"
@@ -149,7 +151,7 @@ describe 'promise_fail_value plugin', ->
 
   before ->
 
-    dog = create_liar [
+    dog = createLiar [
       function_name: 'meow_async'
       promise_fail_value: "Dogs don't meow!"
     ]

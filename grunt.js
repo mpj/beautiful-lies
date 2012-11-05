@@ -26,9 +26,9 @@ module.exports = function(grunt) {
 
   grunt.registerTask('compile', 'Compiles CoffeeScript source into JavaScript.', function(){
     var coffee = require('coffee-script');
-    var js = coffee.compile(grunt.file.read('create_liar.coffee'));
+    var js = coffee.compile(grunt.file.read('beautiful-lies.coffee'));
     var banner = grunt.task.directive('<banner:meta.banner>', function() { return null; });
-    if (js) grunt.file.write('lib/create_liar.js', banner + js);
+    if (js) grunt.file.write('lib/beautiful-lies.js', banner + js);
 
     js = coffee.compile(grunt.file.read('plugins.coffee'));
     if (js) grunt.file.write('lib/plugins.js', js);

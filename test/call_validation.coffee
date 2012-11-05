@@ -1,14 +1,16 @@
 chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
-create_liar = require '../create_liar'
+
+lies        = require '../beautiful-lies'
+createLiar  = lies.createLiar
 
 sword = {}
 
 describe 'call validation', ->
 
   beforeEach ->
-    sword = create_liar [{
+    sword = createLiar [{
       function_name: 'cut'
     }]
 

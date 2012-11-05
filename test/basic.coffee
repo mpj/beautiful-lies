@@ -1,13 +1,15 @@
 chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
-create_liar = require '../create_liar'
 
-describe 'create_liar', ->
+lies        = require '../beautiful-lies'
+createLiar = lies.createLiar
+
+describe 'createLiar', ->
 
   it 'Should simulate a function call', ->
 
-    liar = create_liar [
+    liar = createLiar [
       function_name: 'someFunction'
       returns:
         value:
@@ -19,7 +21,7 @@ describe 'create_liar', ->
 
   it 'should treat a single object the same was as an array of one', ->
 
-    liar = create_liar # Look ma, no array!
+    liar = createLiar # Look ma, no array!
       function_name: 'someFunction'
       returns:
         value:
@@ -31,7 +33,7 @@ describe 'create_liar', ->
 
   describe 'arguments provided', ->
 
-    liar = create_liar [
+    liar = createLiar [
         function_name: 'funkyFunction'
         arguments: [ 'apples' ]
         returns:
@@ -55,7 +57,7 @@ describe 'create_liar', ->
 
   describe 'Multiple lies', ->
 
-    liar = create_liar [
+    liar = createLiar [
       {
         function_name: 'authorize'
         returns:
@@ -75,7 +77,7 @@ describe 'create_liar', ->
 
   describe 'Expectations should be nestable', ->
 
-    liar = create_liar [
+    liar = createLiar [
       function_name: 'connect'
       returns:
         value: { status: 'open' }
@@ -93,7 +95,7 @@ describe 'create_liar', ->
       connection.query().should.equal '5 little pigs'
 
 it 'should match to right lie if multiple per function', ->
-  liar = create_liar [{
+  liar = createLiar [{
     function_name: 'add'
     arguments: [2, 3]
     returns:
@@ -114,7 +116,7 @@ describe 'Syntax checking', ->
 
   it 'should validate that return has a value property', ->
     (->
-      liar = create_liar [
+      liar = createLiar [
         function_name: 'something'
         returns:
           values: 'somevalue' # <- spelled wrong, an "s" at the end!
@@ -125,14 +127,14 @@ describe 'Syntax checking', ->
 
   it 'should validate function_name of root', ->
     (->
-      liar = create_liar [
+      liar = createLiar [
         function: 'do_stuff' # forgot _name
       ]
     ).should.throw 'lies must have property "function_name"'
 
   it 'should validate that arguments is an array (root)', ->
     (->
-      liar = create_liar [
+      liar = createLiar [
         function_name: 'woop'
         arguments: 'hats' # forgot the array brackets
       ]
@@ -142,7 +144,7 @@ describe 'Syntax checking', ->
   it 'should validate that function is string', ->
     (->
       myFunc = -> # just declare a random function
-      liar = create_liar [
+      liar = createLiar [
         function_name: myFunc
         returns: 9
       ]

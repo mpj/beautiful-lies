@@ -1,11 +1,13 @@
 chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
-create_liar = require '../create_liar'
+
+lies        = require '../beautiful-lies'
+createLiar = lies.createLiar
 
 describe 'Runs callback', ->
 
-  liar = create_liar [
+  liar = createLiar [
     function_name: 'connect'
     run_callback: [
       argument_2:
@@ -21,7 +23,7 @@ describe 'Runs callback', ->
 
 describe 'Runs callback (result object instead of array of result object)', ->
 
-  liar = create_liar [
+  liar = createLiar [
     function_name: 'connect'
     run_callback:
       argument_2:
@@ -36,7 +38,7 @@ describe 'Runs callback (result object instead of array of result object)', ->
 
 describe 'Runs callback with error arguments', ->
 
-  liar = create_liar [
+  liar = createLiar [
     function_name: 'query'
     run_callback: [
       argument_1:
@@ -53,7 +55,7 @@ describe 'Runs callback with error arguments', ->
 
 describe 'Runs callback with dual arguments', ->
 
-  liar = create_liar [
+  liar = createLiar [
     function_name: 'query'
     run_callback: [
       argument_2:
@@ -76,7 +78,7 @@ describe 'Runs callback order', ->
 
   it 'should call callbacks in turn', ->
 
-    liar = create_liar [
+    liar = createLiar [
       function_name: 'query'
       run_callback: [
         {
@@ -111,7 +113,7 @@ describe 'Runs callback order', ->
 
   it 'should work with multiple expectations', (done) ->
 
-    liar = create_liar [
+    liar = createLiar [
       {
         function_name: 'count'
         run_callback: [
@@ -158,7 +160,7 @@ describe 'Runs callback order', ->
       result = null
 
       beforeEach (done) ->
-        liar = create_liar [
+        liar = createLiar [
           function_name: 'query'
           run_callback: [
             {
@@ -189,7 +191,7 @@ describe 'Runs callback order', ->
 
       result = null
       beforeEach (done) ->
-        liar = create_liar [
+        liar = createLiar [
           function_name: 'query'
           run_callback: [
             {
@@ -221,7 +223,7 @@ describe 'Runs callback order', ->
 
 it 'should support on_value for callback arguments', (done) ->
 
-  liar = create_liar [
+  liar = createLiar [
     function_name: 'connect'
     run_callback: [
       argument_2:
@@ -243,7 +245,7 @@ it 'should support on_value for callback arguments', (done) ->
 
 it 'should treat simple objects to on_value the same way as an array with 1 item', (done) ->
 
-  liar = create_liar [
+  liar = createLiar [
     function_name: 'connect'
     run_callback: [
       argument_2:
@@ -267,7 +269,7 @@ describe 'Syntax checking', ->
 
   it 'should have a nice warning when too few callbacks', ->
     (->
-      liar = create_liar [
+      liar = createLiar [
         function_name: 'kaboom'
         run_callback: [
           {
@@ -286,7 +288,7 @@ describe 'Syntax checking', ->
     ).should.throw 'kaboom was called 3 times, but only defined 2 run_callback.'
 
   it 'should not display the nice warning when there is only a single callback result', (done) ->
-    liar = create_liar [
+    liar = createLiar [
       function_name: 'shoot',
       run_callback: [{
         argument_1:
@@ -302,7 +304,7 @@ describe 'Syntax checking', ->
 
   it 'should validate that arguments is an array (on_value)', ->
     (->
-      liar = create_liar [
+      liar = createLiar [
         function_name: 'birth'
         returns:
           value: {}
@@ -318,7 +320,7 @@ describe 'Syntax checking', ->
 
   it 'should validate function_name of on_value', ->
     (->
-      liar = create_liar [
+      liar = createLiar [
         function_name: 'do_stuff'
         returns:
           value: {}
