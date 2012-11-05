@@ -1,9 +1,20 @@
 # Dangerously fast way to publish a patch to NPM
+
 set -e # Stop if anything fails
+
+if [ "$1" == "--minor" ]; then
+  BUMP_COMMAND="bump:minor"
+elif [ "$1" == "--major" ]; then
+  BUMP_COMMAND="bump:major"
+else
+  BUMP_COMMAND="bump:patch"
+fi
+
+
 echo "Enter your npmjs.org credentials."
 npm adduser
 npm install
-VERSION=`./node_modules/grunt/bin/grunt bump:patch |  grep -no 'to .*$' | cut -c 6-`;
+VERSION=`./node_modules/grunt/bin/grunt $BUMP_COMMAND |  grep -no 'to .*$' | cut -c 6-`;
 ./build.sh
 git add package.json
 git add lib/*.js
