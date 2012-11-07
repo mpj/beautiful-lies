@@ -2,7 +2,7 @@ chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
 
-lies        = require '../beautiful-lies'
+lies        = require '../src/beautiful-lies'
 createLiar = lies.createLiar
 
 describe 'Runs callback', ->
