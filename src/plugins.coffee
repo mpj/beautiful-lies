@@ -19,12 +19,15 @@ plugins =
 
   promise_done: (obj) ->
     returns:
-      on_value: [
+      on_value: [{
         function_name: 'done'
         run_callback: [
           argument_1: obj
         ]
-      ]
+      }, {
+        # Implicit fail that does nothing.
+        function_name: 'fail'
+      }]
 
   on_promise_done: (obj) ->
     plugins.promise_done
@@ -36,12 +39,15 @@ plugins =
 
   promise_fail: (obj) ->
     returns:
-      on_value: [
+      on_value: [{
         function_name: 'fail'
         run_callback: [
           argument_1: obj
         ]
-      ]
+      },{
+        # Implicit done that does nothing.
+        function_name: 'done'
+      }]
 
   promise_fail_value: (obj) ->
     plugins.promise_fail

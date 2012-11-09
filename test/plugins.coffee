@@ -89,6 +89,18 @@ describe 'promise_done plugin', ->
         result[2].should.equal 'Luke'
         done()
 
+  it 'should have an implicit fail', (done) ->
+    failExecuted = false
+    liar.connect().fail ->
+      failExecuted = true
+    setTimeout ->
+      failExecuted.should.equal false
+      done()
+    ,100
+
+
+
+
 describe 'on_promise_done plugin', ->
 
   liar = {}
@@ -144,6 +156,15 @@ describe 'promise_fail plugin', ->
     dog.meow_async().fail (error) ->
       error.should.equal "Dogs don't meow!"
       done()
+
+  it 'should handle fail implicitly', (done) ->
+    doneExecuted = false
+    dog.meow_async().done ->
+      doneExecuted = true
+    setTimeout ->
+      doneExecuted.should.equal false
+      done()
+    ,100
 
 describe 'promise_fail_value plugin', ->
 
