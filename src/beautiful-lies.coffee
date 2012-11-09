@@ -4,6 +4,12 @@ create_liar = (lies) ->
 # Inject built-in plugins
 create_liar.plugins = require './plugins'
 
+lie = (lies) ->
+  # FIXME: Fugly hack until I have time to refactor
+  lies.function_name = 'temp_func'
+  temp_obj = create_liar lies
+  temp_obj.temp_func
+
 injectLies = (liar, lies) ->
   lies = [ lies ] if not Array.isArray lies
   for lie in lies
@@ -175,3 +181,4 @@ args_as_array = (arguments_obj) ->
 
 
 module.exports.createLiar = create_liar
+module.exports.lie = lie
