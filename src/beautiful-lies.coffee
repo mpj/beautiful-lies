@@ -10,7 +10,6 @@ lie = (lies) ->
   lies.forEach (lie) ->
     lie.function_name = 'untitled_function'
 
-  console.log lies
   temp_obj = create_liar lies
   temp_obj['untitled_function']
 
