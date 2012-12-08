@@ -6,9 +6,13 @@ create_liar.plugins = require './plugins'
 
 lie = (lies) ->
   # FIXME: Fugly hack until I have time to refactor
-  lies.function_name = 'temp_func'
+  lies = [ lies ] if not Array.isArray lies
+  lies.forEach (lie) ->
+    lie.function_name = 'untitled_function'
+
+  console.log lies
   temp_obj = create_liar lies
-  temp_obj.temp_func
+  temp_obj['untitled_function']
 
 injectLies = (liar, lies) ->
   lies = [ lies ] if not Array.isArray lies

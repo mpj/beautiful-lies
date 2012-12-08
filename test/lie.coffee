@@ -7,10 +7,27 @@ lie  = lies.lie
 
 describe 'lie', ->
 
-  it 'should create fake function', ->
+  it 'creates fake function', ->
     meow = lie
       returns:
         value: 'Meeeeow!'
     meow().should.equal 'Meeeeow!'
+
+  it 'works with multiple set of expectations', ->
+
+    imitator = lie [
+      {
+        arguments: [ 'cat' ]
+        returns:
+          value: 'Meow!'
+      },{
+        arguments: [ 'dog' ]
+        returns:
+          value: 'Woof!'
+      }
+    ]
+
+    imitator('cat').should.equal('Meow!')
+    imitator('dog').should.equal('Woof!')
 
 
