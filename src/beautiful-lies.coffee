@@ -25,6 +25,8 @@ injectLies = (liar, lies) ->
 
     liar[lie.function_name] =
       generateHandler lie.function_name, lies
+
+    lie.host = liar
   liar
 
 injectPlugins = (lie) ->
@@ -120,6 +122,9 @@ run_callbacks = (lie, arguments_obj) ->
 
   if lie.run_callback_flow
     run_callback y, callback for y in lie.run_callback_flow
+
+  if lie.run_function
+    lie.run_function.bind(lie.host)()
 
 run_callback = (y, callback) ->
   return if not callback # Sometimes, callback are not provided
