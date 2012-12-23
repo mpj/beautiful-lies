@@ -6,23 +6,37 @@ lies        = require '../src/beautiful-lies'
 lie         = lies.lie
 createLiar  = lies.createLiar
 
-describe 'run_function', ->
+describe 'run funciton', ->
 
-  bamseBear = null
+  lastExecuted = null
+  callbackExecuted = null
+  runFunctionFunctionExecuted = null
 
-  describe 'when using createLiar', ->
+  beforeEach (done) ->
+    lastExecuted = null
+    runFunctionFunctionExecuted = false
+    callbackExecuted = false
 
-    beforeEach ->
-      bamseBear = createLiar
-        function_name: 'eatHoney'
-        run_function: ->
-          this.isStrong = true
+    bamseBear = createLiar
+      function_name: 'myFunction'
+      run_callback:
+        argument_1:
+          value: 'whatever'
+      run_function: ->
+        lastExecuted = 'run_function'
+        runFunctionFunctionExecuted = true
 
-      bamseBear.isStrong = false
+    bamseBear.myFunction () ->
+      lastExecuted = 'callback'
+      callbackExecuted = true
 
-    it 'set isStrong when calling', ->
-      bamseBear.eatHoney()
-      bamseBear.isStrong.should.equal true
+    setTimeout(done, 100)
 
-    it 'should not have set before', ->
-      bamseBear.isStrong.should.equal false
+  it 'runs run_function function', ->
+    runFunctionFunctionExecuted.should.equal true
+
+  it 'runs callback', ->
+    callbackExecuted.should.equal true
+
+  it 'runs callback after run_function', ->
+    lastExecuted.should.equal 'callback'

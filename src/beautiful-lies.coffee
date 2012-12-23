@@ -55,6 +55,9 @@ generateHandler = (function_name, lies) ->
           message += "Possible: " + args_as_array(lie.arguments).join(', ')
         throw new Error(message)
 
+    if lie.run_function
+      lie.run_function.bind(lie.host)()
+
     run_callbacks lie, arguments
 
     handler.times_called++
@@ -122,9 +125,6 @@ run_callbacks = (lie, arguments_obj) ->
 
   if lie.run_callback_flow
     run_callback y, callback for y in lie.run_callback_flow
-
-  if lie.run_function
-    lie.run_function.bind(lie.host)()
 
 run_callback = (y, callback) ->
   return if not callback # Sometimes, callback are not provided
