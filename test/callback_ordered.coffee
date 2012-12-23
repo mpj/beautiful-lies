@@ -73,6 +73,26 @@ describe 'Runs callback with dual arguments', ->
       result.should.deep.equal [ 'Smith', 'Johnson', 'Jackson' ]
       done()
 
+describe 'run_callback defined with no_arguments', ->
+
+  passedToCallback = null
+
+  beforeEach (done) ->
+    liar = createLiar [
+      function_name: 'query',
+      run_callback: [
+        no_arguments: true
+      ]
+    ]
+    liar.query () ->
+      passedToCallback = arguments
+
+    setTimeout done, 50
+
+  it 'runs callback without arguments', ->
+    passedToCallback.length.should.equal 0
+
+
 
 describe 'Runs callback order', ->
 

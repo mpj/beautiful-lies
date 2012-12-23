@@ -20,8 +20,8 @@ describe 'run funciton', ->
     bamseBear = createLiar
       function_name: 'myFunction'
       run_callback:
-        argument_1:
-          value: 'whatever'
+        no_arguments: true
+
       run_function: ->
         lastExecuted = 'run_function'
         runFunctionFunctionExecuted = true

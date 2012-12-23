@@ -152,6 +152,9 @@ callback_arguments_array = (run_callback_spec) ->
   args = []
   highest_index = 0
 
+  if run_callback_spec.no_arguments
+    return []
+
   # TODO perhaps use the funky coffescript Comprehensions here
   # to create a matches array
   for property_name of run_callback_spec
