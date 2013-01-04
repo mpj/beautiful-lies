@@ -35,6 +35,9 @@ that has three basic types of building blocks - expectations specs, result specs
   function_name: 'collection',
   arguments: [ 'members' ],
   returns: /* RESULT SPEC GOES HERE */
+  run_function: function() {
+    // anything you want here.
+  }
   run_callback: /* ARRAY OF CALLBACK SPECS GOES HERE */
   run_callback_flow: /* ARRAY OF CALLBACK SPECS GOES HERE*/
 }
@@ -53,6 +56,9 @@ that has three basic types of building blocks - expectations specs, result specs
 {
   argument_1: /* RESULT SPEC GOES HERE */
   argument_2: /* RESULT SPEC GOES HERE*/,
+  of:
+    function_name: 'addEventListener'
+    arguments: [ 'click' ]
   delay: 1000
 }
 ```

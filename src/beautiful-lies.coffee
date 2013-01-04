@@ -37,34 +37,110 @@ injectPlugins = (lie) ->
       for key, value of generated
         lie[key] = generated[key]
 
-generateHandler = (function_name, lies) ->
+generateHandler = (function_name, all_expectations) ->
 
   handler = () ->
 
-    lies_matching_function = filter_on_function lies, function_name
-
-    if lies_matching_function.length is 1 and not lies_matching_function[0].arguments?
-      lie = lies_matching_function[0]
+    # 1. Find the expectation that matches the handler call.
+    expectation = null
+    expectations_matching = filter_on_function all_expectations, function_name
+    if expectations_matching.length is 1 and not expectations_matching[0].arguments?
+      expectation = expectations_matching[0]
     else
-      lies_matching_args = filter_on_args lies_matching_function, arguments
-      lie = lies_matching_args[0]
-      if not lie
-        message = "funkyFunction called with unexpected arguments. " +
-                  "Actual: " + args_as_array(arguments).join(', ')
-        for lie in lies_matching_function
-          message += "Possible: " + args_as_array(lie.arguments).join(', ')
-        throw new Error(message)
+      lies_matching_args = filter_on_args expectations_matching, arguments
+      expectation = lies_matching_args[0]
+      # TODO: What if we get multiple matches?
 
-    if lie.run_function
-      lie.run_function.bind(lie.host)()
+    # 2. Throw an error if we did not find an expectation
+    # matching the handler call.
+    if not expectation
+      message = "funkyFunction called with unexpected arguments. " +
+                "Actual: " + args_as_array(arguments).join(', ')
+      for match in expectations_matching
+        message += "Possible: " + args_as_array(match.arguments).join(', ')
+      throw new Error(message)
 
-    run_callbacks lie, arguments
+
+    # 3. If the expectation specifies a run_function,
+    # execute it.
+    # TODO: This return value should probably, well, return.
+    # It would also be nice if it got the proper arguments too.
+    if expectation.run_function
+      expectation.run_function.bind(expectation.host)()
+
+    # 5. Trigger callbacks
+
+    # 5.1. Store a reference to the callback provided to the
+    # handler. This is used by the "of" command to call the
+    # callbacks given to other functions.
+    handler_callback = find_function(arguments)
+    expectation.host.__callbacks ?= []
+    expectation.host.__callbacks.push
+      function_name: expectation.function_name
+      arguments: remove_functions(arguments)
+      function_ref: handler_callback
+
+    # 5.2 Define a function that triggers a callback according
+    # to a single callback specification (an expectation might define
+    # multiple callback specifications)
+    process_single_callback_spec = (callback_spec) ->
+
+      if callback_spec.of
+        # If the "of" property is set on the callback specification,
+        # that means that we want to call back to the callback of
+        # ANOTHER function, instead of any callback provided to the
+        # handler. This is used to mock out stuff like
+        # addEventListener(eventName, callback)
+        candidates = expectation.host.__callbacks.filter (c) ->
+          c.function_name is callback_spec.of.function_name and
+            arrays_equal(c.arguments, callback_spec.of.arguments)
+        fn = candidates[0].function_ref
+      else
+        fn = handler_callback
+
+      return if not fn # Sometimes, callback are not provided
+                       # but we generally want to behave as
+                       # if they we're executed.
+
+      callback_arguments = callback_arguments_array callback_spec
+      run_delayed this, fn, callback_arguments, callback_spec.delay ?= 50
+
+
+    if expectation.run_callback
+
+      # This expectation calls it's callback in an *ordered* manner
+      # (as opposed to a *flowing* manner). This means that the first time
+      # the function is called, the first callback spec is executed, the
+      # second call the second callback spec, and so on ...
+
+      # run_callback might be a single object or an array.
+      if not Array.isArray expectation.run_callback
+        expectation.run_callback = [ expectation.run_callback ]
+
+      if expectation.run_callback.length is 1
+        s = expectation.run_callback[0]
+      else
+        expectation.__calls ?= 0
+        s = expectation.run_callback[expectation.__calls++]
+
+      if not s?
+        m = "#{expectation.function_name} was called #{expectation.__calls} times, " +
+            "but only defined #{expectation.run_callback.length} run_callback."
+        throw new Error(m)
+
+      process_single_callback_spec s
+
+    else if expectation.run_callback_flow
+      # This expectation calls it's callback in a *flow*, i.e. executes all it's
+      # callback specs immideately, but in a fast flow.
+      for s in expectation.run_callback_flow
+        process_single_callback_spec s
 
     handler.times_called++
     handler.call_arguments.push(args_as_array(arguments))
 
-    if lie.returns?
-      inject_and_return lie.returns
+    if expectation.returns?
+      inject_and_return expectation.returns
 
   handler.times_called = 0
   handler.call_arguments = []
@@ -79,7 +155,6 @@ inject_and_return = (return_spec) ->
   return null if not return_spec
   if typeof return_spec.value is 'undefined' and typeof return_spec.on_value is 'undefined'
     throw new Error('returns object must have property "value" or "on_value"')
-
 
   if typeof return_spec.on_value isnt 'undefined'
 
@@ -103,50 +178,10 @@ filter_on_args = (lies, args_obj) ->
 
   lie for lie in lies when matches_args(lie)
 
-
-
-run_callbacks = (lie, arguments_obj) ->
-  callback = find_function arguments_obj
-
-  callback_chain = lie.run_callback;
-
-  if callback_chain
-
-    callback_chain = [ callback_chain ] if not Array.isArray callback_chain
-
-    # FIXME: Better variable name for y
-    if callback_chain.length is 1
-      y = callback_chain[0]
-    else
-      lie.__calls = 0 if not lie.__calls?
-      y = callback_chain[lie.__calls++]
-
-    if not y?
-      m = "#{lie.function_name} was called #{lie.__calls} times, " +
-          "but only defined #{lie.run_callback.length} run_callback."
-      throw new Error(m)
-    run_callback y, callback
-
-
-  if lie.run_callback_flow
-    run_callback y, callback for y in lie.run_callback_flow
-
-run_callback = (y, callback) ->
-  return if not callback # Sometimes, callback are not provided
-                         # but we generally want to behave as
-                         # if they we're executed.
-                         # TODO: Add log feedback when this happens.
-  callback_arguments = callback_arguments_array y
-
-  y.delay ?= 50
-  run_delayed this, callback, callback_arguments, y.delay
-
-
 run_delayed = (thisObj, fn, args, delay) ->
   setTimeout () ->
     fn.apply thisObj, args
   , delay
-
 
 find_function = (arguments_obj) ->
   for arg in arguments_obj
@@ -180,9 +215,10 @@ arrays_equal = (a, b) ->
     return false if item isnt b[i]
   true
 
-remove_functions = (arr) ->
-  # Returns a copy of arr, with functions removed.
-  item for item in arr when not is_function(item)
+remove_functions = (object) ->
+  # Returns a copy of object (which can be an array or
+  # arguments object), with functions removed.
+  item for item in object when not is_function(item)
 
 is_function = (obj) ->
   obj? and {}.toString.call(obj) is '[object Function]'
@@ -193,7 +229,6 @@ args_as_array = (arguments_obj) ->
   if not arguments_obj?
     return []
   arg for arg in arguments_obj
-
 
 
 module.exports.createLiar = create_liar

@@ -239,7 +239,99 @@ describe 'Runs callback order', ->
           done()
         , 237
 
+describe 'run_callback has an "of" property', (done) ->
 
+  describe 'and has one event listener', ->
+    liar = null
+    yielded = null
+
+    beforeEach (done) ->
+
+      liar = createLiar [
+        {
+          function_name: 'addEventListener'
+        }, {
+          function_name: 'loadStuff'
+          run_callback:
+            of:
+              function_name: 'addEventListener'
+              arguments: [ 'onLoad' ]
+            argument_2:
+              value: 'This is a result!'
+        }
+      ]
+
+
+
+      liar.addEventListener 'onLoad', (error, result) ->
+        yielded = result
+      liar.loadStuff()
+
+      setTimeout done, 100
+
+    it 'executes addEventListener callback', ->
+      yielded.should.equal 'This is a result!'
+
+  describe 'and has multiple event listeners', ->
+
+    onLoadResult = null
+    onErrorResult = null
+    liar = null
+
+    beforeEach ->
+      liar = createLiar [
+        {
+          function_name: 'addEventListener'
+          arguments: [ 'onLoad' ]
+        }, {
+          function_name: 'addEventListener'
+          arguments: [ 'onError' ]
+        }, {
+          function_name: 'loadStuff'
+          run_callback: [
+            {
+              of:
+                function_name: 'addEventListener'
+                arguments: [ 'onLoad' ]
+              argument_1:
+                value: 'This is a result!'
+            },{
+              of:
+                function_name: 'addEventListener'
+                arguments: [ 'onError' ]
+              argument_1:
+                value: 'This is an error!'
+            }
+          ]
+        }
+      ]
+
+      liar.addEventListener 'onLoad', (result) ->
+        onLoadResult = result
+      liar.addEventListener 'onError', (result) -> onErrorResult = result
+
+    describe 'when calling loadStuff the first time', ->
+      beforeEach (done) ->
+        liar.loadStuff()
+        setTimeout done, 100
+
+      it 'gets the result', ->
+        onLoadResult.should.equal 'This is a result!'
+
+      it 'and does not get an error', ->
+        expect(onErrorResult).to.equal null
+
+      describe 'but when calling it a second time', ->
+        beforeEach (done) ->
+          liar.loadStuff()
+          setTimeout done, 100
+
+        it 'gets the error', ->
+          onErrorResult.should.equal 'This is an error!'
+
+
+
+  # TODO certain arguments
 
 it 'should support on_value for callback arguments', (done) ->
 
