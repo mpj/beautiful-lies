@@ -17,12 +17,12 @@ plugins =
         value: obj
     ]
 
-  promise_done: (obj) ->
+  promise_done: (result_spec) ->
     returns:
       on_value: [{
         function_name: 'done'
         run_callback: [
-          argument_1: obj
+          argument_1: result_spec
         ]
       }, {
         # Implicit fail that does nothing.

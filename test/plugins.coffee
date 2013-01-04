@@ -138,6 +138,22 @@ describe 'promise_done_value plugin', ->
       result.should.equal 'Meow!'
       done()
 
+describe 'promise_done_value plugin (null)', ->
+
+  cat = {}
+
+  before ->
+    cat = createLiar [
+      function_name: 'idle_async'
+      promise_done_value: null
+    ]
+
+  it 'should run callback and get no arguments', (done) ->
+    cat.idle_async().done (result) ->
+      expect(result).to.equal null
+      done()
+
+
 
 
 describe 'promise_fail plugin', ->

@@ -75,15 +75,20 @@ generateHandler = (function_name, lies) ->
     return false
   return handler
 
-inject_and_return = (return_lie) ->
-  return null if not return_lie
-  if not return_lie.value? and not return_lie.on_value?
+inject_and_return = (return_spec) ->
+  return null if not return_spec
+  if typeof return_spec.value is 'undefined' and typeof return_spec.on_value is 'undefined'
     throw new Error('returns object must have property "value" or "on_value"')
 
-  return_lie.value ?= {}
-  if return_lie.on_value?
-    injectLies return_lie.value, return_lie.on_value
-  return_lie.value
+
+  if typeof return_spec.on_value isnt 'undefined'
+
+    # If we have expectations on_value, but no value,
+    # we implicitly assume that the user means an empty object.
+    return_spec.value ?= {}
+
+    injectLies return_spec.value, return_spec.on_value
+  return_spec.value
 
 filter_on_function = (lies, function_name) ->
   lie for lie in lies when lie.function_name is function_name
