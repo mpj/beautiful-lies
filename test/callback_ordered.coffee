@@ -5,6 +5,9 @@ expect      = chai.expect
 lies        = require '../src/beautiful-lies'
 createLiar = lies.createLiar
 
+# TODO: Add support for simultaneous calls of another (of) callback
+# and the handler callback
+
 describe 'Runs callback', ->
 
   liar = createLiar [
