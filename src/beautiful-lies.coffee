@@ -102,6 +102,14 @@ generateHandler = (function_name, all_expectations) ->
         candidates = expectation.host.__callbacks.filter (c) ->
           c.function_name is callback_spec.of.function_name and
             arrays_equal(c.arguments, callback_spec.of.arguments)
+
+        if candidates.length is 0
+          throw new Error 'Tried to run callback provided to '+ callback_spec.of.function_name + ' along ' +
+            'with arguments [ ' + callback_spec.of.arguments.join(', ') + ' ], ' +
+            'but didn\'t find any. Did you misspell ' +
+            'function_name or arguments, or perhaps the callback was never passed to ' +
+            callback_spec.of.function_name + '?'
+
         fn = candidates[0].function_ref
       else
         fn = handler_callback

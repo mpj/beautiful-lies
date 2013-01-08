@@ -501,5 +501,21 @@ describe 'Syntax checking', ->
       liar.hello()
     ).should.throw 'run_callback.of property was set to "871" - must be an object.'
 
+  it 'should throw pretty error message if an of command does\'nt match any callback', ->
+    (->
+      liar = createLiar [{
+          function_name: 'addEventListener'
+          arguments: [ 'onLoad' ]
+        },{
+          function_name: 'secondaryFunction'
+          run_callback:
+            of:
+              function_name: 'mainFunction'
+              arguments: ['onload'] # <- OOPS, a misspelling!
+        }
+      ]
+      liar.secondaryFunction()
+    ).should.throw 'Tried to run callback provided to mainFunction along with arguments [ onload ], but didn\'t find any. Did you misspell function_name or arguments, or perhaps the callback was never passed to mainFunction?'
+
 
 
