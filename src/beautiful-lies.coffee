@@ -90,6 +90,10 @@ generateHandler = (function_name, all_expectations) ->
         if typeof callback_spec.of isnt 'object'
           throw new Error 'run_callback.of property was set to "' + callback_spec.of + '" - must be an object.'
 
+        # arguments property should be an implicit array.
+        if callback_spec.of.arguments and not Array.isArray(callback_spec.of.arguments)
+          callback_spec.of.arguments = [ callback_spec.of.arguments ]
+
         # If the "of" property is set on the callback specification,
         # that means that we want to call back to the callback of
         # ANOTHER function, instead of any callback provided to the

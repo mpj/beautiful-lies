@@ -244,6 +244,10 @@ describe 'Runs callback order', ->
 
 describe 'run_callback has an "of" property', (done) ->
 
+  onLoadResult = null
+  onErrorResult = null
+  liar = null
+
   describe 'and has one event listener', ->
     liar = null
     yielded = null
@@ -277,9 +281,7 @@ describe 'run_callback has an "of" property', (done) ->
 
   describe 'and has multiple event listeners', ->
 
-    onLoadResult = null
-    onErrorResult = null
-    liar = null
+
 
     beforeEach ->
       liar = createLiar [
@@ -331,6 +333,39 @@ describe 'run_callback has an "of" property', (done) ->
 
         it 'gets the error', ->
           onErrorResult.should.equal 'This is an error!'
+
+  describe 'and defines a single argument (as opposed to array)', ->
+    beforeEach ->
+      liar = createLiar [
+        {
+          function_name: 'addEventListener'
+          arguments: [ 'onResult' ]
+        },{
+          function_name: 'loadThings'
+          run_callback: {
+            of:
+              function_name: 'addEventListener'
+              arguments: 'onResult' # <- Look ma, no []!
+            argument_1:
+              value: 'This is a result!'
+          }
+        }
+      ]
+
+    describe 'and loads things', ->
+      beforeEach (done) ->
+        liar.addEventListener 'onResult', (result) -> onLoadResult = result
+        liar.loadThings()
+        setTimeout done, 51
+
+      it 'should get the correct result', ->
+        onLoadResult.should.equal 'This is a result!'
+
+
+
+
+
+
 
 
 
