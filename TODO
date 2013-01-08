@@ -1,0 +1,6 @@
+TODO
+
+* Hmmm: Syntax overlap between of and expectation...
+  * Use reference instead?
+  * Define inline? (Hah, that might actually work, but we need to traverse down the tree to find all expectation specs. Might work though. An idea might be to preprocess the tree,
+  and move all the inlined expectations up in the tree, and create some kind of unique reference.)

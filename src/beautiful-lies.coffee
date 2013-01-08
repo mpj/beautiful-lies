@@ -114,7 +114,6 @@ generateHandler = (function_name, all_expectations) ->
           ', but I had multiple choices and could not guess which one was right. ' +
           'You need to provide run_callback.of.arguments.'
 
-
         fn = candidates[0].function_ref
       else
         fn = handler_callback
