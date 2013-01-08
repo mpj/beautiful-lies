@@ -507,15 +507,41 @@ describe 'Syntax checking', ->
           function_name: 'addEventListener'
           arguments: [ 'onLoad' ]
         },{
-          function_name: 'secondaryFunction'
+          function_name: 'runLoader'
           run_callback:
             of:
-              function_name: 'mainFunction'
+              function_name: 'addEventListener'
               arguments: ['onload'] # <- OOPS, a misspelling!
         }
       ]
-      liar.secondaryFunction()
-    ).should.throw 'Tried to run callback provided to mainFunction along with arguments [ onload ], but didn\'t find any. Did you misspell function_name or arguments, or perhaps the callback was never passed to mainFunction?'
+      liar.addEventListener 'onLoad', ->
+      liar.runLoader()
+    ).should.throw 'Tried to run callback provided to addEventListener along with arguments [ onload ], but didn\'t find any. Did you misspell function_name or arguments, or perhaps the callback was never passed to addEventListener?'
+
+  it 'should throw a nice error message if too broad a match', ->
+    (->
+      liar = createLiar [
+        {
+          function_name: 'addEventListener'
+          arguments: [ 'onLoad' ]
+        },
+        {
+          function_name: 'addEventListener'
+          arguments: [ 'onError' ]
+        }
+        ,{
+          function_name: 'doQuery'
+          run_callback:
+            of:
+              function_name: 'addEventListener'
+              # Oooops, no arguments here!
+        }
+      ]
+      liar.addEventListener 'onLoad', -> console.log("oh hai")
+      liar.addEventListener 'onError', -> console.log("oh hai")
+      liar.doQuery()
+    ).should.throw 'Tried to run callback provided to addEventListener, but I had multiple choices and could not guess which one was right. You need to provide run_callback.of.arguments.'
+
 
 
 
