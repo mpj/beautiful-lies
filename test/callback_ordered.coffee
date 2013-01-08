@@ -446,3 +446,25 @@ describe 'Syntax checking', ->
       liar.do_stuff()
     ).should.throw 'lies must have property "function_name"'
 
+  it 'should verify that of is an object (string)', ->
+    (->
+      liar = createLiar [
+        function_name: 'do_things'
+        run_callback:
+          of: 'otherFunction'
+      ]
+      liar.do_things()
+    ).should.throw 'run_callback.of property was set to "otherFunction" - must be an object.'
+
+  it 'should verify that of is an object (number)', ->
+    (->
+      liar = createLiar [
+        function_name: 'hello'
+        run_callback:
+          of: 871
+      ]
+      liar.hello()
+    ).should.throw 'run_callback.of property was set to "871" - must be an object.'
+
+
+

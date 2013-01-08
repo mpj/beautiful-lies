@@ -86,6 +86,10 @@ generateHandler = (function_name, all_expectations) ->
     process_single_callback_spec = (callback_spec) ->
 
       if callback_spec.of
+
+        if typeof callback_spec.of isnt 'object'
+          throw new Error 'run_callback.of property was set to "' + callback_spec.of + '" - must be an object.'
+
         # If the "of" property is set on the callback specification,
         # that means that we want to call back to the callback of
         # ANOTHER function, instead of any callback provided to the
