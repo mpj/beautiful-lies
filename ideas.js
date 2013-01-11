@@ -1,4 +1,14 @@
 var expectation = {
+  on:  'connect',
+  with_args: [ 'bajs' ],
+  then_result: RESULT,
+  then_callback_1: CALLBACK_SPEC
+};
+
+
+// ====================================
+
+var expectation = {
   if_function:  'connect',
   with_arguments: [ 'bajs' ],
   result: RESULT,

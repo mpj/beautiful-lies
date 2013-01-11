@@ -46,6 +46,7 @@ that has three basic types of building blocks - expectations specs, result specs
 ### Result spec
 ```javascript
 {
+  self: false
   value: { someProperty: 5 }
   on_value: /* ARRAY OF EXPECTATION SPECS GOES HERE */
 },

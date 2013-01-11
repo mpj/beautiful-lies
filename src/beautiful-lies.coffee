@@ -60,13 +60,33 @@ generateHandler = (function_name, all_expectations) ->
         message += "Possible: " + args_as_array(match.arguments).join(', ')
       throw new Error(message)
 
-
     # 3. If the expectation specifies a run_function,
     # execute it.
     # TODO: This return value should probably, well, return.
     # It would also be nice if it got the proper arguments too.
     if expectation.run_function
       expectation.run_function.bind(expectation.host)()
+
+    # 4. Prepare a function for processing result specs.
+    process_result_spec = (result_spec) ->
+      return null if not result_spec
+      if  typeof result_spec.value is 'undefined' and
+          typeof result_spec.on_value is 'undefined' and
+          !result_spec.self
+        throw new Error('returns object must have property "value" or "on_value" or "self: true"')
+
+      if typeof result_spec.on_value isnt 'undefined'
+
+        # If we have expectations on_value, but no value,
+        # we implicitly assume that the user means an empty object.
+        result_spec.value ?= {}
+
+        injectLies result_spec.value, result_spec.on_value
+
+      if result_spec.self is true
+        return expectation.host
+      else
+        result_spec.value
 
     # 5. Trigger callbacks
 
@@ -122,9 +142,28 @@ generateHandler = (function_name, all_expectations) ->
                        # but we generally want to behave as
                        # if they we're executed.
 
-      callback_arguments = callback_arguments_array callback_spec
-      run_delayed this, fn, callback_arguments, callback_spec.delay ?= 50
+      # Construct the actual objects to send to the callback
+      callback_arguments = []
+      highest_index = 0
 
+      unless callback_spec.no_arguments
+        # TODO perhaps use the funky coffescript Comprehensions here
+        # to create a matches array
+        for property_name of callback_spec
+          match = /argument_(\d+)/.exec property_name
+          if match?
+            index = parseInt(match[1]) - 1
+            callback_arguments[index] = process_result_spec callback_spec[property_name]
+            highest_index = index if index > highest_index
+
+        # fill em up
+        for i in [0..highest_index]
+          callback_arguments[i] = null if not callback_arguments[i]?
+        if callback_arguments.length > 0 then callback_arguments else null
+
+
+      # Finally, run the callback!
+      run_delayed this, fn, callback_arguments, callback_spec.delay ?= 50
 
     if expectation.run_callback
 
@@ -160,7 +199,9 @@ generateHandler = (function_name, all_expectations) ->
     handler.call_arguments.push(args_as_array(arguments))
 
     if expectation.returns?
-      inject_and_return expectation.returns
+      process_result_spec expectation.returns
+
+    # end handler
 
   handler.times_called = 0
   handler.call_arguments = []
@@ -170,20 +211,6 @@ generateHandler = (function_name, all_expectations) ->
         return true
     return false
   return handler
-
-inject_and_return = (return_spec) ->
-  return null if not return_spec
-  if typeof return_spec.value is 'undefined' and typeof return_spec.on_value is 'undefined'
-    throw new Error('returns object must have property "value" or "on_value"')
-
-  if typeof return_spec.on_value isnt 'undefined'
-
-    # If we have expectations on_value, but no value,
-    # we implicitly assume that the user means an empty object.
-    return_spec.value ?= {}
-
-    injectLies return_spec.value, return_spec.on_value
-  return_spec.value
 
 filter_on_function = (lies, function_name) ->
   lie for lie in lies when lie.function_name is function_name
@@ -207,27 +234,6 @@ find_function = (arguments_obj) ->
   for arg in arguments_obj
     return arg if is_function(arg)
   null
-
-callback_arguments_array = (run_callback_spec) ->
-  args = []
-  highest_index = 0
-
-  if run_callback_spec.no_arguments
-    return []
-
-  # TODO perhaps use the funky coffescript Comprehensions here
-  # to create a matches array
-  for property_name of run_callback_spec
-    match = /argument_(\d+)/.exec property_name
-    if match?
-      index = parseInt(match[1]) - 1
-      args[index] = inject_and_return(run_callback_spec[property_name])
-      highest_index = index if index > highest_index
-
-  # fill em up
-  for i in [0..highest_index]
-    args[i] = null if not args[i]?
-  if args.length > 0 then args else null
 
 arrays_equal = (a, b) ->
   return false if a? isnt b? or a.length isnt b.length

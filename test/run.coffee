@@ -1,12 +1,12 @@
 chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
-
+after       = require('fluent-time').after
 lies        = require '../src/beautiful-lies'
 lie         = lies.lie
 createLiar  = lies.createLiar
 
-describe 'run funciton', ->
+describe 'run function', ->
 
   lastExecuted = null
   callbackExecuted = null
@@ -30,7 +30,7 @@ describe 'run funciton', ->
       lastExecuted = 'callback'
       callbackExecuted = true
 
-    setTimeout(done, 100)
+    after(100).milliseconds -> done()
 
   it 'runs run_function function', ->
     runFunctionFunctionExecuted.should.equal true

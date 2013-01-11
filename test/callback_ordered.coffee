@@ -1,7 +1,7 @@
 chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
-
+after       = require('fluent-time').after
 lies        = require '../src/beautiful-lies'
 createLiar = lies.createLiar
 
@@ -90,7 +90,7 @@ describe 'run_callback defined with no_arguments', ->
     liar.query () ->
       passedToCallback = arguments
 
-    setTimeout done, 50
+    after(50).milliseconds -> done()
 
   it 'runs callback without arguments', ->
     passedToCallback.length.should.equal 0
@@ -120,7 +120,7 @@ describe 'Runs callback order', ->
       arr.push str
 
     arr.length.should.equal 0
-    setTimeout () ->
+    after(60).milliseconds ->
 
       arr[0].should.equal 'ninjas'
       arr.length.should.equal 1
@@ -128,11 +128,9 @@ describe 'Runs callback order', ->
       liar.query (dummy1, str) ->
         arr.push str
 
-      setTimeout () ->
+      after(60).milliseconds ->
         arr[1].should.equal 'pirates'
-      , 60
 
-    , 60
 
   it 'should work with multiple expectations', (done) ->
 
@@ -197,21 +195,17 @@ describe 'Runs callback order', ->
 
       it 'should not have called back after 49ms', (done) ->
 
-        setTimeout ->
+        after(10).milliseconds ->
           should.not.exist result
           done()
-        , 10
 
       it 'should have callbed back after 50ms', (done) ->
 
-        setTimeout ->
+        after(50).milliseconds ->
           result.should.equal '47 ninjas'
           done()
-        , 50
 
     describe 'when calling back with a delay of 237 ms', () ->
-
-
       result = null
       beforeEach (done) ->
         liar = createLiar [
@@ -229,18 +223,14 @@ describe 'Runs callback order', ->
         done()
 
       it 'should not have called back after 236ms', (done) ->
-
-        setTimeout ->
+        after(236).milliseconds ->
           should.not.exist result
           done()
-        , 236
 
       it 'should have called back after 237ms', (done) ->
-
-        setTimeout ->
+        after(237).milliseconds ->
           result.should.equal '49 ninjas'
           done()
-        , 237
 
 describe 'run_callback has an "of" property', (done) ->
 
@@ -274,7 +264,7 @@ describe 'run_callback has an "of" property', (done) ->
         yielded = result
       liar.loadStuff()
 
-      setTimeout done, 100
+      after(100).milliseconds -> done()
 
     it 'executes addEventListener callback', ->
       yielded.should.equal 'This is a result!'
@@ -311,14 +301,13 @@ describe 'run_callback has an "of" property', (done) ->
         }
       ]
 
-      liar.addEventListener 'onLoad', (result) ->
-        onLoadResult = result
+      liar.addEventListener 'onLoad', (result) -> onLoadResult = result
       liar.addEventListener 'onError', (result) -> onErrorResult = result
 
     describe 'when calling loadStuff the first time', ->
       beforeEach (done) ->
         liar.loadStuff()
-        setTimeout done, 100
+        after(60).milliseconds -> done()
 
       it 'gets the result', ->
         onLoadResult.should.equal 'This is a result!'
@@ -329,7 +318,7 @@ describe 'run_callback has an "of" property', (done) ->
       describe 'but when calling it a second time', ->
         beforeEach (done) ->
           liar.loadStuff()
-          setTimeout done, 100
+          after(100).milliseconds -> done()
 
         it 'gets the error', ->
           onErrorResult.should.equal 'This is an error!'
@@ -356,15 +345,10 @@ describe 'run_callback has an "of" property', (done) ->
       beforeEach (done) ->
         liar.addEventListener 'onResult', (result) -> onLoadResult = result
         liar.loadThings()
-        setTimeout done, 51
+        after(51).milliseconds -> done()
 
       it 'should get the correct result', ->
         onLoadResult.should.equal 'This is a result!'
-
-
-
-
-
 
 
 

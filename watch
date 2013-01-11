@@ -3,5 +3,7 @@
 # Watches directory for changes and restarts
 # automatically if the coffeescript compiler crashes.
 
+npm install
+
 trap 'exit' 2 # Trap SIGINT or we won't be able to exit. :)
 mocha --compilers coffee:coffee-script --watch --growl --reporter nyan || growlnotify --message "Test process is crashing." --wait;exec $0

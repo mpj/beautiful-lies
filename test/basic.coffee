@@ -19,6 +19,30 @@ describe 'createLiar', ->
     liar.someFunction().should.deep.equal
       someProperty: 5
 
+  describe 'When returns.self is true', ->
+    liar = null
+    beforeEach ->
+      liar = createLiar
+        function_name: 'superFunction'
+        returns:
+          self: true
+
+    it 'function should return host object', ->
+      liar.superFunction().should.equal liar
+
+  describe 'When returns.self is false', ->
+    liar = null
+    beforeEach ->
+      liar = createLiar
+        function_name: 'superFunction'
+        returns:
+          self: false
+          value: "Superman!"
+
+    it 'function should NOT return host object', ->
+      liar.superFunction().should.equal "Superman!"
+
+
   it 'should treat a single object the same was as an array of one', ->
 
     liar = createLiar # Look ma, no array!

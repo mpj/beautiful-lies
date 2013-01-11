@@ -1,6 +1,7 @@
 chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
+after       = require('fluent-time').after
 
 lies        = require '../src/beautiful-lies'
 createLiar = lies.createLiar
@@ -25,8 +26,7 @@ describe 'run_callback_flow', ->
     arr = []
     liar.query (str) ->
       arr.push str
-    setTimeout () ->
+    after(400).milliseconds ->
       arr[0].should.equal 'hey'
       arr[1].should.equal 'ho'
       done()
-    , 400

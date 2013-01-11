@@ -1,4 +1,5 @@
 chai        = require 'chai'
+after       = require('fluent-time').after
 should      = chai.should()
 expect      = chai.expect
 
@@ -72,7 +73,6 @@ describe 'promise_done plugin', ->
   liar = {}
 
   before ->
-
     liar = createLiar [
       function_name: 'connect'
       promise_done:
@@ -91,12 +91,27 @@ describe 'promise_done plugin', ->
 
   it 'should have an implicit fail', (done) ->
     failExecuted = false
-    liar.connect().fail ->
-      failExecuted = true
-    setTimeout ->
+    liar.connect().fail -> failExecuted = true
+    after(100).milliseconds ->
       failExecuted.should.equal false
       done()
-    ,100
+
+  it 'should allow chaining done and fail', (done) ->
+    liar.connect().done (connection) ->
+      connection.query().fail( ->
+        # Implementation not important
+      ).done (result) ->
+        result[2].should.equal 'Luke'
+        done()
+
+  it 'should allow chaining fail and done (in reversed order)', (done) ->
+    liar.connect().done (connection) ->
+      connection.query().done((result) ->
+        result[2].should.equal 'Luke'
+        done()
+      ).fail( ->
+        # Implementation not important
+      )
 
 
 
@@ -177,10 +192,9 @@ describe 'promise_fail plugin', ->
     doneExecuted = false
     dog.meow_async().done ->
       doneExecuted = true
-    setTimeout ->
+    after(100).milliseconds ->
       doneExecuted.should.equal false
       done()
-    ,100
 
 describe 'promise_fail_value plugin', ->
 

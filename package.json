@@ -17,7 +17,8 @@
     "growl": "~1.5.1",
     "grunt": "~0.3.17",
     "grunt-simple-mocha": "~0.2.0",
-    "grunt-bump": "~0.0.1"
+    "grunt-bump": "~0.0.1",
+    "fluent-time": "~0.0.7"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --reporter spec"
