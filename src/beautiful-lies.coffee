@@ -160,6 +160,8 @@ generateHandler = (function_name, all_expectations) ->
         for i in [0..highest_index]
           callback_arguments[i] = null if not callback_arguments[i]?
         if callback_arguments.length > 0 then callback_arguments else null
+        # FIXME: The above line is unnecessary for any tests to pass.
+        # Investigate.
 
 
       # Finally, run the callback!

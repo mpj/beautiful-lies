@@ -46,9 +46,11 @@ plugins =
         run_callback: [
           argument_1: obj
         ]
+        returns: self: true
       },{
         # Implicit done that does nothing.
         function_name: 'done'
+        returns: self: true
       }]
 
   promise_fail_value: (obj) ->

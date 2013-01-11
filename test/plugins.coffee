@@ -175,7 +175,7 @@ describe 'promise_fail plugin', ->
 
   dog = {}
 
-  before ->
+  beforeEach ->
 
     dog = createLiar [
       function_name: 'meow_async'
@@ -188,13 +188,33 @@ describe 'promise_fail plugin', ->
       error.should.equal "Dogs don't meow!"
       done()
 
-  it 'should handle fail implicitly', (done) ->
+  it 'should handle done implicitly', (done) ->
     doneExecuted = false
     dog.meow_async().done ->
       doneExecuted = true
     after(100).milliseconds ->
       doneExecuted.should.equal false
       done()
+
+  it 'should allow chaining done', (done) ->
+    dog.meow_async().fail( (error) ->
+      error.should.equal "Dogs don't meow!"
+      done()
+    ).done ->
+      # implementation not important
+
+  it 'should allow chaining fail on implicit done', (done) ->
+    dog.meow_async().done( ->
+      # implementation not important
+    ).fail (error) ->
+      error.should.equal "Dogs don't meow!"
+      done()
+
+
+
+  #it 'should allow chaining fail and done (in reversed order)', (done) ->
+
+
 
 describe 'promise_fail_value plugin', ->
 
