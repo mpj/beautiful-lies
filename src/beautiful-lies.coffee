@@ -233,9 +233,9 @@ filter_on_args = (expectations, args_obj) ->
 
 
 run_delayed = (thisObj, fn, args, delay) ->
-  setTimeout () ->
+  setTimeout (->
     fn.apply thisObj, args
-  , delay
+  ), delay
 
 find_function = (arguments_obj) ->
   for arg in arguments_obj
@@ -253,15 +253,13 @@ remove_functions = (object) ->
   # arguments object), with functions removed.
   item for item in object when not is_function(item)
 
-is_function = (obj) ->
-  obj? and {}.toString.call(obj) is '[object Function]'
+is_function = (obj) -> obj? and {}.toString.call(obj) is '[object Function]'
 
 args_as_array = (arguments_obj) ->
   # Convert that pesky function arguments object
   # to a normal array.
   return [] if not arguments_obj?
   arg for arg in arguments_obj
-
 
 module.exports.createLiar = create_liar
 module.exports.lie = lie
