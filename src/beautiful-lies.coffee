@@ -1,5 +1,5 @@
 create_liar = (expectations) ->
-  createAndInject {}, expectations
+  createAndInjectHandlers {}, expectations
 
 # Inject built-in plugins
 create_liar.plugins = require './plugins'
@@ -13,7 +13,7 @@ lie = (expectations) ->
   temp_obj = create_liar expectations
   temp_obj['untitled_function']
 
-createAndInject = (host, expectations) ->
+createAndInjectHandlers = (host, expectations) ->
   expectations = [ expectations ] if not Array.isArray expectations
   for expectation in expectations
     preprocessExpectation expectation
@@ -27,9 +27,7 @@ preprocessExpectation = (expectation) ->
     throw new Error 'expectation must have property "function_name"'
   if typeof expectation.function_name isnt 'string'
     throw new Error 'function_name must be a string.'
-
   injectPlugins expectation
-
 
 injectPlugins = (expectation) ->
   for key, value of expectation
@@ -83,7 +81,7 @@ generateHandler = (function_name, all_expectations) ->
         # we implicitly assume that the user means an empty object.
         result_spec.value ?= {}
 
-        createAndInject result_spec.value, result_spec.on_value
+        createAndInjectHandlers result_spec.value, result_spec.on_value
 
       if result_spec.self is true
         return expectation.host
