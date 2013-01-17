@@ -154,7 +154,7 @@ describe 'Syntax checking', ->
       liar = createLiar [
         function: 'do_stuff' # forgot _name
       ]
-    ).should.throw 'lies must have property "function_name"'
+    ).should.throw 'expectation must have property "function_name"'
 
   it 'should validate that arguments is an array (root)', ->
     (->

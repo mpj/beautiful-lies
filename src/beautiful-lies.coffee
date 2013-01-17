@@ -1,41 +1,43 @@
-create_liar = (lies) ->
-  injectLies {}, lies
+create_liar = (expectations) ->
+  createAndInject {}, expectations
 
 # Inject built-in plugins
 create_liar.plugins = require './plugins'
 
-lie = (lies) ->
+lie = (expectations) ->
   # FIXME: Fugly hack until I have time to refactor
-  lies = [ lies ] if not Array.isArray lies
-  lies.forEach (lie) ->
-    lie.function_name = 'untitled_function'
+  expectations = [ expectations ] if not Array.isArray expectations
+  expectations.forEach (exp) ->
+    exp.function_name = 'untitled_function'
 
-  temp_obj = create_liar lies
+  temp_obj = create_liar expectations
   temp_obj['untitled_function']
 
-injectLies = (liar, lies) ->
-  lies = [ lies ] if not Array.isArray lies
-  for lie in lies
-    if not lie.function_name?
-      throw new Error 'lies must have property "function_name"'
-    if typeof lie.function_name isnt 'string'
-      throw new Error 'function_name must be a string.'
+createAndInject = (host, expectations) ->
+  expectations = [ expectations ] if not Array.isArray expectations
+  for expectation in expectations
+    preprocessExpectation expectation
+    host[expectation.function_name] =
+      generateHandler expectation.function_name, expectations
+    expectation.host = host
+  host
 
-    injectPlugins lie
+preprocessExpectation = (expectation) ->
+  if not expectation.function_name?
+    throw new Error 'expectation must have property "function_name"'
+  if typeof expectation.function_name isnt 'string'
+    throw new Error 'function_name must be a string.'
 
-    liar[lie.function_name] =
-      generateHandler lie.function_name, lies
+  injectPlugins expectation
 
-    lie.host = liar
-  liar
 
-injectPlugins = (lie) ->
-  for key, value of lie
+injectPlugins = (expectation) ->
+  for key, value of expectation
     if create_liar.plugins[key]
-      delete lie[key]
+      delete expectation[key]
       generated = create_liar.plugins[key](value)
       for key, value of generated
-        lie[key] = generated[key]
+        expectation[key] = generated[key]
 
 generateHandler = (function_name, all_expectations) ->
 
@@ -47,8 +49,8 @@ generateHandler = (function_name, all_expectations) ->
     if expectations_matching.length is 1 and not expectations_matching[0].arguments?
       expectation = expectations_matching[0]
     else
-      lies_matching_args = filter_on_args expectations_matching, arguments
-      expectation = lies_matching_args[0]
+      expectations_matching_args = filter_on_args expectations_matching, arguments
+      expectation = expectations_matching_args[0]
       # TODO: What if we get multiple matches?
 
     # 2. Throw an error if we did not find an expectation
@@ -81,7 +83,7 @@ generateHandler = (function_name, all_expectations) ->
         # we implicitly assume that the user means an empty object.
         result_spec.value ?= {}
 
-        injectLies result_spec.value, result_spec.on_value
+        createAndInject result_spec.value, result_spec.on_value
 
       if result_spec.self is true
         return expectation.host
@@ -203,29 +205,34 @@ generateHandler = (function_name, all_expectations) ->
     if expectation.returns?
       process_result_spec expectation.returns
 
-    # end handler
+    # END handler
 
   handler.times_called = 0
   handler.call_arguments = []
   handler.called_with = (args...) ->
     for call in handler.call_arguments
-      if arrays_equal call, args
-        return true
-    return false
-  return handler
+      return true if arrays_equal call, args
+    false
 
-filter_on_function = (lies, function_name) ->
-  lie for lie in lies when lie.function_name is function_name
+  handler
 
-filter_on_args = (lies, args_obj) ->
-  actual_args_cleaned = remove_functions(args_obj)
-  matches_args = (lie) ->
-    lie_args = lie.arguments ? []
-    if not Array.isArray lie_args
+filter_on_function = (expectations, function_name) ->
+  e for e in expectations when e.function_name is function_name
+
+filter_on_args = (expectations, args_obj) ->
+
+  result = -> e for e in expectations when matches_args_obj(e)
+
+  matches_args_obj = (exp) ->
+    exp_args = exp.arguments ? []
+    if not Array.isArray exp_args
       throw new Error "arguments must be of type Array."
-    arrays_equal lie_args, actual_args_cleaned
+    arrays_equal exp_args, actual_args_cleaned
 
-  lie for lie in lies when matches_args(lie)
+  actual_args_cleaned = remove_functions args_obj
+
+  result()
+
 
 run_delayed = (thisObj, fn, args, delay) ->
   setTimeout () ->
@@ -254,8 +261,7 @@ is_function = (obj) ->
 args_as_array = (arguments_obj) ->
   # Convert that pesky function arguments object
   # to a normal array.
-  if not arguments_obj?
-    return []
+  return [] if not arguments_obj?
   arg for arg in arguments_obj
 
 

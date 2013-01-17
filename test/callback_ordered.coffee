@@ -463,7 +463,7 @@ describe 'Syntax checking', ->
           ]
       ]
       liar.do_stuff()
-    ).should.throw 'lies must have property "function_name"'
+    ).should.throw 'expectation must have property "function_name"'
 
   it 'should verify that of is an object (string)', ->
     (->
