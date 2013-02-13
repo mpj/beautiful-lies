@@ -1,5 +1,6 @@
 Beautiful Lies
 ==============
+![Build status](https://api.travis-ci.org/mpj/beautiful-lies.png)
 
 Test doubles for asynchronous JavaScript that are easy on the eyes.
 
