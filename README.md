@@ -2,7 +2,7 @@ Beautiful Lies
 ==============
 ![Build status](https://api.travis-ci.org/mpj/beautiful-lies.png)
 
-Test doubles for asynchronous JavaScript that are easy on the eyes.
+Mocks for asynchronous JavaScript that are easy on the eyes.
 
 #### Create a test double ...
 ```javascript
