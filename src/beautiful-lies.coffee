@@ -54,7 +54,7 @@ generateHandler = (function_name, all_expectations) ->
     # 2. Throw an error if we did not find an expectation
     # matching the handler call.
     if not expectation
-      message = "funkyFunction called with unexpected arguments. " +
+      message = "#{ function_name } called with unexpected arguments. " +
                 "Actual: " + args_as_array(arguments).join(', ')
       for match in expectations_matching
         message += "Possible: " + args_as_array(match.arguments).join(', ')
