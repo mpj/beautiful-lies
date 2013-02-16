@@ -1,26 +1,23 @@
 create_liar = (expectations) ->
-  createAndInjectHandlers {}, expectations
+  host = {}
+  host.expect expectations
 
 # Inject built-in plugins
 create_liar.plugins = require './plugins'
 
-lie = (expectations) ->
-  # FIXME: Fugly hack until I have time to refactor
-  expectations = [ expectations ] if not Array.isArray expectations
-  expectations.forEach (exp) ->
-    exp.function_name = 'untitled_function'
+init = () ->
+  Object.prototype.expect = expect
 
-  temp_obj = create_liar expectations
-  temp_obj['untitled_function']
-
-createAndInjectHandlers = (host, expectations) ->
+expect = (expectations) ->
   expectations = [ expectations ] if not Array.isArray expectations
+
   for expectation in expectations
     preprocessExpectation expectation
-    host[expectation.function_name] =
-      generateHandler expectation.function_name, expectations
-    expectation.host = host
-  host
+    assignHandler this, expectation.function_name
+
+  this.__expectations ?= []
+  this.__expectations.push e for e in expectations
+  this
 
 preprocessExpectation = (expectation) ->
   if not expectation.function_name?
@@ -30,20 +27,20 @@ preprocessExpectation = (expectation) ->
   injectPlugins expectation
 
 injectPlugins = (expectation) ->
-  for key, value of expectation
+  for own key, value of expectation
     if create_liar.plugins[key]
       delete expectation[key]
       generated = create_liar.plugins[key](value)
-      for key, value of generated
+      for own key, value of generated
         expectation[key] = generated[key]
 
-generateHandler = (function_name, all_expectations) ->
+assignHandler = (host, function_name) ->
 
   handler = () ->
 
     # 1. Find the expectation that matches the handler call.
     expectation = null
-    expectations_matching = filter_on_function all_expectations, function_name
+    expectations_matching = filter_on_function host.__expectations, function_name
     if expectations_matching.length is 1 and not expectations_matching[0].arguments?
       expectation = expectations_matching[0]
     else
@@ -65,7 +62,7 @@ generateHandler = (function_name, all_expectations) ->
     # TODO: This return value should probably, well, return.
     # It would also be nice if it got the proper arguments too.
     if expectation.run_function
-      expectation.run_function.bind(expectation.host)()
+      expectation.run_function.bind(host)()
 
     # 4. Prepare a function for processing result specs.
     process_result_spec = (result_spec) ->
@@ -81,10 +78,10 @@ generateHandler = (function_name, all_expectations) ->
         # we implicitly assume that the user means an empty object.
         result_spec.value ?= {}
 
-        createAndInjectHandlers result_spec.value, result_spec.on_value
+        result_spec.value.expect result_spec.on_value
 
       if result_spec.self is true
-        return expectation.host
+        return host
       else
         result_spec.value
 
@@ -94,8 +91,8 @@ generateHandler = (function_name, all_expectations) ->
     # handler. This is used by the "of" command to call the
     # callbacks given to other functions.
     handler_callback = find_function(arguments)
-    expectation.host.__callbacks ?= []
-    expectation.host.__callbacks.push
+    host.__callbacks ?= []
+    host.__callbacks.push
       function_name: expectation.function_name
       arguments: remove_functions(arguments)
       function_ref: handler_callback
@@ -119,7 +116,7 @@ generateHandler = (function_name, all_expectations) ->
         # ANOTHER function, instead of any callback provided to the
         # handler. This is used to mock out stuff like
         # addEventListener(eventName, callback)
-        candidates = expectation.host.__callbacks.filter (c) ->
+        candidates = host.__callbacks.filter (c) ->
           c.function_name is callback_spec.of.function_name and ( !callback_spec.of.arguments? or arrays_equal(callback_spec.of.arguments, c.arguments ) )
 
         if candidates.length is 0
@@ -212,7 +209,11 @@ generateHandler = (function_name, all_expectations) ->
       return true if arrays_equal call, args
     false
 
-  handler
+  host[function_name] = handler
+
+handle_function_call = (host, handler, function_name) ->
+  # TODO Can function name be inferred with callee?
+
 
 filter_on_function = (expectations, function_name) ->
   e for e in expectations when e.function_name is function_name
@@ -230,7 +231,6 @@ filter_on_args = (expectations, args_obj) ->
   actual_args_cleaned = remove_functions args_obj
 
   result()
-
 
 run_delayed = (thisObj, fn, args, delay) ->
   setTimeout (->
@@ -262,4 +262,4 @@ args_as_array = (arguments_obj) ->
   arg for arg in arguments_obj
 
 module.exports.createLiar = create_liar
-module.exports.lie = lie
+module.exports.init = init
