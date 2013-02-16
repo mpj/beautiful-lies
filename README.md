@@ -1,6 +1,5 @@
 Beautiful Lies
 ==============
-![Build status](https://api.travis-ci.org/mpj/beautiful-lies.png)
 [![Build status][1]][2]
 
 [1]: https://api.travis-ci.org/mpj/beautiful-lies.png
