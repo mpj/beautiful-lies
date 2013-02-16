@@ -3,14 +3,17 @@ should      = chai.should()
 expect      = chai.expect
 after       = require('fluent-time').after
 lies        = require '../src/beautiful-lies'
-createLiar = lies.createLiar
+
+lies.init()
 
 # TODO: Add support for simultaneous calls of another (of) callback
 # and the handler callback
 
 describe 'Runs callback', ->
 
-  liar = createLiar [
+  liar = {}
+
+  liar.expect [
     function_name: 'connect'
     run_callback: [
       argument_2:
@@ -26,7 +29,9 @@ describe 'Runs callback', ->
 
 describe 'Runs callback (result object instead of array of result object)', ->
 
-  liar = createLiar [
+  liar = {}
+
+  liar.expect [
     function_name: 'connect'
     run_callback:
       argument_2:
@@ -40,8 +45,8 @@ describe 'Runs callback (result object instead of array of result object)', ->
       done()
 
 describe 'Runs callback with error arguments', ->
-
-  liar = createLiar [
+  liar = {}
+  liar.expect [
     function_name: 'query'
     run_callback: [
       argument_1:
@@ -57,8 +62,8 @@ describe 'Runs callback with error arguments', ->
       done()
 
 describe 'Runs callback with dual arguments', ->
-
-  liar = createLiar [
+  liar = {}
+  liar.expect [
     function_name: 'query'
     run_callback: [
       argument_2:
@@ -77,11 +82,11 @@ describe 'Runs callback with dual arguments', ->
       done()
 
 describe 'run_callback defined with no_arguments', ->
-
+  liar = {}
   passedToCallback = null
 
   beforeEach (done) ->
-    liar = createLiar [
+    liar.expect [
       function_name: 'query',
       run_callback: [
         no_arguments: true
@@ -99,9 +104,10 @@ describe 'run_callback defined with no_arguments', ->
 
 describe 'Runs callback order', ->
 
-  it 'should call callbacks in turn', ->
 
-    liar = createLiar [
+  it 'should call callbacks in turn', ->
+    liar = {}
+    liar.expect [
       function_name: 'query'
       run_callback: [
         {
@@ -133,8 +139,8 @@ describe 'Runs callback order', ->
 
 
   it 'should work with multiple expectations', (done) ->
-
-    liar = createLiar [
+    liar = {}
+    liar.expect [
       {
         function_name: 'count'
         run_callback: [
@@ -176,12 +182,15 @@ describe 'Runs callback order', ->
 
   describe 'yeild delay', ->
 
-    describe 'when running callback without any delay specified', ->
 
+    describe 'when running callback without any delay specified', ->
+      liar = null
       result = null
 
       beforeEach (done) ->
-        liar = createLiar [
+        liar = {}
+
+        liar.expect [
           function_name: 'query'
           run_callback: [
             {
@@ -206,9 +215,11 @@ describe 'Runs callback order', ->
           done()
 
     describe 'when calling back with a delay of 237 ms', () ->
+      liar = null
       result = null
       beforeEach (done) ->
-        liar = createLiar [
+        liar = {}
+        liar.expect [
           function_name: 'query'
           run_callback: [
             {
@@ -236,15 +247,21 @@ describe 'run_callback has an "of" property', (done) ->
 
   onLoadResult = null
   onErrorResult = null
+  yielded = null
   liar = null
 
-  describe 'and has one event listener', ->
-    liar = null
+  beforeEach ->
+    onLoadResult = null
+    onErrorResult = null
     yielded = null
+    liar = {}
+
+
+  describe 'and has one event listener', ->
 
     beforeEach (done) ->
 
-      liar = createLiar [
+      liar.expect [
         {
           function_name: 'addEventListener'
         }, {
@@ -258,8 +275,6 @@ describe 'run_callback has an "of" property', (done) ->
         }
       ]
 
-
-
       liar.addEventListener 'onLoad', (error, result) ->
         yielded = result
       liar.loadStuff()
@@ -271,10 +286,8 @@ describe 'run_callback has an "of" property', (done) ->
 
   describe 'and has multiple event listeners', ->
 
-
-
     beforeEach ->
-      liar = createLiar [
+      liar.expect [
         {
           function_name: 'addEventListener'
           arguments: [ 'onLoad' ]
@@ -325,7 +338,7 @@ describe 'run_callback has an "of" property', (done) ->
 
   describe 'and defines a single argument (as opposed to array)', ->
     beforeEach ->
-      liar = createLiar [
+      liar.expect [
         {
           function_name: 'addEventListener'
           arguments: [ 'onResult' ]
@@ -356,8 +369,8 @@ describe 'run_callback has an "of" property', (done) ->
   # TODO certain arguments
 
 it 'should support on_value for callback arguments', (done) ->
-
-  liar = createLiar [
+  liar = {}
+  liar.expect [
     function_name: 'connect'
     run_callback: [
       argument_2:
@@ -378,8 +391,8 @@ it 'should support on_value for callback arguments', (done) ->
     done()
 
 it 'should treat simple objects to on_value the same way as an array with 1 item', (done) ->
-
-  liar = createLiar [
+  liar = {}
+  liar.expect [
     function_name: 'connect'
     run_callback: [
       argument_2:
@@ -400,10 +413,11 @@ it 'should treat simple objects to on_value the same way as an array with 1 item
     done()
 
 describe 'Syntax checking', ->
-
+  liar = null
+  beforeEach -> liar = {}
   it 'should have a nice warning when too few callbacks', ->
     (->
-      liar = createLiar [
+      liar.expect [
         function_name: 'kaboom'
         run_callback: [
           {
@@ -422,7 +436,7 @@ describe 'Syntax checking', ->
     ).should.throw 'kaboom was called 3 times, but only defined 2 run_callback.'
 
   it 'should not display the nice warning when there is only a single callback result', (done) ->
-    liar = createLiar [
+    liar.expect [
       function_name: 'shoot',
       run_callback: [{
         argument_1:
@@ -438,7 +452,7 @@ describe 'Syntax checking', ->
 
   it 'should validate that arguments is an array (on_value)', ->
     (->
-      liar = createLiar [
+      liar.expect [
         function_name: 'birth'
         returns:
           value: {}
@@ -454,7 +468,7 @@ describe 'Syntax checking', ->
 
   it 'should validate function_name of on_value', ->
     (->
-      liar = createLiar [
+      liar.expect [
         function_name: 'do_stuff'
         returns:
           value: {}
@@ -467,7 +481,7 @@ describe 'Syntax checking', ->
 
   it 'should verify that of is an object (string)', ->
     (->
-      liar = createLiar [
+      liar.expect [
         function_name: 'do_things'
         run_callback:
           of: 'otherFunction'
@@ -477,7 +491,7 @@ describe 'Syntax checking', ->
 
   it 'should verify that of is an object (number)', ->
     (->
-      liar = createLiar [
+      liar.expect [
         function_name: 'hello'
         run_callback:
           of: 871
@@ -487,7 +501,7 @@ describe 'Syntax checking', ->
 
   it 'should throw pretty error message if an of command does\'nt match any callback', ->
     (->
-      liar = createLiar [{
+      liar.expect [{
           function_name: 'addEventListener'
           arguments: [ 'onLoad' ]
         },{
@@ -504,7 +518,7 @@ describe 'Syntax checking', ->
 
   it 'should throw a nice error message if too broad a match', ->
     (->
-      liar = createLiar [
+      liar.expect [
         {
           function_name: 'addEventListener'
           arguments: [ 'onLoad' ]
