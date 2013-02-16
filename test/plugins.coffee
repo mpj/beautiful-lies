@@ -4,7 +4,8 @@ should      = chai.should()
 expect      = chai.expect
 
 lies        = require '../src/beautiful-lies'
-createLiar  = lies.createLiar
+
+lies.init()
 
 describe 'callback_result plugin', ->
 
@@ -12,7 +13,7 @@ describe 'callback_result plugin', ->
 
   before ->
 
-    liar = createLiar [
+    liar.expect [
       function_name: 'count_async'
       callback_result: {
         value: 'Four plus four is eight!'
@@ -30,7 +31,7 @@ describe 'on_callback_result + callback_error_value plugin', ->
   liar = {}
 
   before ->
-    liar = createLiar [
+    liar.expect [
       function_name: 'connect'
       on_callback_result: [
         function_name: 'query'
@@ -55,7 +56,7 @@ describe 'callback_error plugin', ->
 
   before ->
 
-    liar = createLiar [
+    liar.expect [
       function_name: 'bark_async'
       callback_error_value: {
         message: 'Cats cannot bark!'
@@ -73,7 +74,7 @@ describe 'promise_done plugin', ->
   liar = {}
 
   before ->
-    liar = createLiar [
+    liar.expect [
       function_name: 'connect'
       promise_done:
         on_value: [
@@ -122,7 +123,7 @@ describe 'on_promise_done plugin', ->
 
   before ->
 
-    liar = createLiar [
+    liar.expect [
       function_name: 'connect'
       on_promise_done: [
         function_name: 'query'
@@ -143,7 +144,7 @@ describe 'promise_done_value plugin', ->
 
   before ->
 
-    cat = createLiar [
+    cat.expect [
       function_name: 'meow_async'
       promise_done_value: 'Meow!'
     ]
@@ -158,7 +159,7 @@ describe 'promise_done_value plugin (null)', ->
   cat = {}
 
   before ->
-    cat = createLiar [
+    cat.expect [
       function_name: 'idle_async'
       promise_done_value: null
     ]
@@ -177,7 +178,7 @@ describe 'promise_fail plugin', ->
 
   beforeEach ->
 
-    dog = createLiar [
+    dog.expect [
       function_name: 'meow_async'
       promise_fail:
         value: "Dogs don't meow!"
@@ -222,7 +223,7 @@ describe 'promise_fail_value plugin', ->
 
   before ->
 
-    dog = createLiar [
+    dog.expect [
       function_name: 'meow_async'
       promise_fail_value: "Dogs don't meow!"
     ]
