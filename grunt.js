@@ -30,8 +30,8 @@ module.exports = function(grunt) {
     var banner = grunt.task.directive('<banner:meta.banner>', function() { return null; });
     if (js) grunt.file.write('lib/beautiful-lies.js', banner + js);
 
-    js = coffee.compile(grunt.file.read('src/plugins.coffee'));
-    if (js) grunt.file.write('lib/plugins.js', js);
+    js = coffee.compile(grunt.file.read('src/macros.coffee'));
+    if (js) grunt.file.write('lib/macros.js', js);
   });
 
   grunt.registerTask('build', 'simplemocha compile');

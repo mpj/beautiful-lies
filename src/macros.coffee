@@ -1,4 +1,4 @@
-plugins =
+macros =
 
   callback_result: (obj) ->
     run_callback: [
@@ -32,11 +32,11 @@ plugins =
       }]
 
   on_promise_done: (obj) ->
-    plugins.promise_done
+    macros.promise_done
       on_value: obj
 
   promise_done_value: (obj) ->
-    plugins.promise_done
+    macros.promise_done
       value: obj
 
   promise_fail: (obj) ->
@@ -54,7 +54,7 @@ plugins =
       }]
 
   promise_fail_value: (obj) ->
-    plugins.promise_fail
+    macros.promise_fail
       value: obj
 
-module.exports = plugins
+module.exports = macros

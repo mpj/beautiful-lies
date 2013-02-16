@@ -1,5 +1,5 @@
 lies = {}
-lies.plugins = require './plugins'
+lies.macros = require './macros'
 
 expect = (expectations) ->
 
@@ -32,9 +32,9 @@ preprocessExpectation = (expectation) ->
 
 injectPlugins = (expectation) ->
   for own key, value of expectation
-    if lies.plugins[key]
+    if lies.macros[key]
       delete expectation[key]
-      generated = lies.plugins[key](value)
+      generated = lies.macros[key](value)
       for own key, value of generated
         expectation[key] = generated[key]
 
