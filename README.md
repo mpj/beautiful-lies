@@ -1,6 +1,10 @@
 Beautiful Lies
 ==============
 ![Build status](https://api.travis-ci.org/mpj/beautiful-lies.png)
+[![Build status][1]][2]
+
+[1]: https://api.travis-ci.org/mpj/beautiful-lies.png
+[2]: https://travis-ci.org/mpj/beautiful-lies
 
 Mocks for asynchronous JavaScript that are easy on the eyes.  Yay! Hooray! Fnuff.
 
