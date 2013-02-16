@@ -3,26 +3,28 @@ should      = chai.should()
 expect      = chai.expect
 
 lies        = require '../src/beautiful-lies'
-createLiar = lies.createLiar
 
-describe 'createLiar', ->
+lies.init()
+
+describe 'expect (basic cases)', ->
+  liar = null
+
+  beforeEach ->
+    liar = {}
 
   it 'Should simulate a function call', ->
-
-    liar = createLiar [
+    liar.expect
       function_name: 'someFunction'
       returns:
         value:
           someProperty: 5
-    ]
 
     liar.someFunction().should.deep.equal
       someProperty: 5
 
   describe 'When returns.self is true', ->
-    liar = null
     beforeEach ->
-      liar = createLiar
+      liar.expect
         function_name: 'superFunction'
         returns:
           self: true
@@ -31,9 +33,8 @@ describe 'createLiar', ->
       liar.superFunction().should.equal liar
 
   describe 'When returns.self is false', ->
-    liar = null
     beforeEach ->
-      liar = createLiar
+      liar.expect
         function_name: 'superFunction'
         returns:
           self: false
@@ -43,26 +44,13 @@ describe 'createLiar', ->
       liar.superFunction().should.equal "Superman!"
 
 
-  it 'should treat a single object the same was as an array of one', ->
-
-    liar = createLiar # Look ma, no array!
-      function_name: 'someFunction'
-      returns:
-        value:
-          someProperty: 5
-
-    liar.someFunction().should.deep.equal
-      someProperty: 5
-
-
   describe 'arguments provided', ->
-
-    liar = createLiar [
-        function_name: 'funkyFunction'
-        arguments: [ 'apples' ]
-        returns:
-          value: 98
-    ]
+    beforeEach ->
+      liar.expect
+          function_name: 'funkyFunction'
+          arguments: [ 'apples' ]
+          returns:
+            value: 98
 
     it 'Should not work with wrong arguments', ->
 
@@ -80,19 +68,19 @@ describe 'createLiar', ->
         .should.equal 98
 
   describe 'Multiple lies', ->
+    beforeEach ->
+      liar.expect [
+        {
+          function_name: 'authorize'
+          returns:
+            value: 98
+        },{
+          function_name: 'charge'
+          returns:
+            value: 'OK'
 
-    liar = createLiar [
-      {
-        function_name: 'authorize'
-        returns:
-          value: 98
-      },{
-        function_name: 'charge'
-        returns:
-          value: 'OK'
-
-      }
-    ]
+        }
+      ]
 
     it 'should return stuff', ->
       liar.authorize().should.equal 98
@@ -100,17 +88,16 @@ describe 'createLiar', ->
 
 
   describe 'Expectations should be nestable', ->
+    beforeEach ->
+      liar.expect
+        function_name: 'connect'
+        returns:
+          value: { status: 'open' }
+          on_value:
+            function_name: 'query'
+            returns:
+              value: '5 little pigs'
 
-    liar = createLiar [
-      function_name: 'connect'
-      returns:
-        value: { status: 'open' }
-        on_value: [
-          function_name: 'query'
-          returns:
-            value: '5 little pigs'
-        ]
-    ]
 
     it 'should be possible to call inner functions', ->
 
@@ -118,58 +105,53 @@ describe 'createLiar', ->
       connection.status.should.equal 'open'
       connection.query().should.equal '5 little pigs'
 
-it 'should match to right lie if multiple per function', ->
-  liar = createLiar [{
-    function_name: 'add'
-    arguments: [2, 3]
-    returns:
-      value: 5
-  },{
-    function_name: 'add'
-    arguments: [5, 4]
-    returns:
-      value: 9
-  }]
-  liar.add(2,3).should.equal 5
-  liar.add(5,4).should.equal 9
+  it 'should match to right lie if multiple per function', ->
+    liar.expect [{
+      function_name: 'add'
+      arguments: [2, 3]
+      returns:
+        value: 5
+    },{
+      function_name: 'add'
+      arguments: [5, 4]
+      returns:
+        value: 9
+    }]
+    liar.add(2,3).should.equal 5
+    liar.add(5,4).should.equal 9
 
 
+  describe 'Syntax checking', ->
 
+    it 'should validate that return has a value property', ->
+      (->
+        liar.expect
+          function_name: 'something'
+          returns:
+            values: 'somevalue' # <- spelled wrong, an "s" at the end!
 
-describe 'Syntax checking', ->
+        liar.something()
 
-  it 'should validate that return has a value property', ->
-    (->
-      liar = createLiar [
-        function_name: 'something'
-        returns:
-          values: 'somevalue' # <- spelled wrong, an "s" at the end!
-      ]
-      liar.something()
+      ).should.throw 'returns object must have property "value" or "on_value"'
 
-    ).should.throw 'returns object must have property "value" or "on_value"'
+    it 'should validate function_name of root', ->
+      (->
+        liar.expect
+          function: 'do_stuff' # forgot _name
+      ).should.throw 'expectation must have property "function_name"'
 
-  it 'should validate function_name of root', ->
-    (->
-      liar = createLiar [
-        function: 'do_stuff' # forgot _name
-      ]
-    ).should.throw 'expectation must have property "function_name"'
+    it 'should validate that arguments is an array (root)', ->
+      (->
+        liar.expect
+          function_name: 'woop'
+          arguments: 'hats' # forgot the array brackets
+        liar.woop()
+      ).should.throw 'arguments must be of type Array.'
 
-  it 'should validate that arguments is an array (root)', ->
-    (->
-      liar = createLiar [
-        function_name: 'woop'
-        arguments: 'hats' # forgot the array brackets
-      ]
-      liar.woop()
-    ).should.throw 'arguments must be of type Array.'
-
-  it 'should validate that function is string', ->
-    (->
-      myFunc = -> # just declare a random function
-      liar = createLiar [
-        function_name: myFunc
-        returns: 9
-      ]
-    ).should.throw 'function_name must be a string.'
+    it 'should validate that function is string', ->
+      (->
+        myFunc = -> # just declare a random function
+        liar.expect
+          function_name: myFunc
+          returns: 9
+      ).should.throw 'function_name must be a string.'
