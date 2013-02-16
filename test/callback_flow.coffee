@@ -4,23 +4,22 @@ expect      = chai.expect
 after       = require('fluent-time').after
 
 lies        = require '../src/beautiful-lies'
-createLiar = lies.createLiar
 
 describe 'run_callback_flow', ->
-
-  liar = createLiar [
-    function_name: 'query'
-    run_callback_flow: [
-      {
-        argument_1:
-          value: 'hey'
-      },
-      {
-        argument_1:
-          value: 'ho'
-      }
-    ]
-  ]
+  liar = {}
+  beforeEach ->
+    liar.expect
+      function_name: 'query'
+      run_callback_flow: [
+        {
+          argument_1:
+            value: 'hey'
+        },
+        {
+          argument_1:
+            value: 'ho'
+        }
+      ]
 
   it 'should have been run in order', (done) ->
     arr = []
