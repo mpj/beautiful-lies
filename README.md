@@ -6,21 +6,26 @@ Mocks for asynchronous JavaScript that are easy on the eyes.  Yay! Hooray! Fnuff
 
 #### Create a test double ...
 ```javascript
-var db = create_liar([{
+var lies = require('beautiful-lies')
+
+lies.expect()
+
+var db = {}
+db.expect({
   function_name: 'connect',
-  on_promise_done: [{
+  on_promise_done: {
     function_name: 'query',
     promise_fail_value: {
       message: 'The query timed out.'
     }
-  }]
-}])
+  }
+})
 ```
 #### And call it ...
 ```javascript
 db.connect().done(function() {
   db.query().fail(function(error) {
-    console.log(error.message); // <-- Will output 'The query timed out.'
+    console.log(error.message) // <-- Will output 'The query timed out.'
   })
 })
 ```
@@ -66,9 +71,9 @@ that has three basic types of building blocks - expectations specs, result specs
 ```
 
 
-## Plugins
-Expectations, results and callback object are buildings blocks that can be used to construct plugins (on_promise_done is a plugin, for instance). Check out the built in plugins here, for inspiration:
-https://github.com/mpj/beautiful-lies/blob/master/plugins.coffee
+## Macros
+Expectations, results and callback object are buildings blocks that can be used to construct macros (on_promise_done is a plugin, for instance). Check out the built-in macros here, for inspiration:
+https://github.com/mpj/beautiful-lies/blob/master/src/macros.coffee
 
 
 
