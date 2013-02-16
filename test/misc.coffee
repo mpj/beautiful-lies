@@ -4,7 +4,7 @@ expect      = chai.expect
 
 lies        = require '../src/beautiful-lies'
 
-lies.init()
+lies.expect()
 
 it 'Value should be implicit if on_value defined', (done) ->
   liar = {}

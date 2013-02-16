@@ -5,7 +5,7 @@ expect      = chai.expect
 
 lies        = require '../src/beautiful-lies'
 
-lies.init()
+lies.expect()
 
 describe 'callback_result plugin', ->
 

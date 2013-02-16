@@ -3,8 +3,8 @@ should      = chai.should()
 expect      = chai.expect
 after       = require('fluent-time').after
 lies        = require '../src/beautiful-lies'
-lie         = lies.lie
-createLiar  = lies.createLiar
+
+lies.expect()
 
 describe 'run function', ->
 
@@ -16,8 +16,8 @@ describe 'run function', ->
     lastExecuted = null
     runFunctionFunctionExecuted = false
     callbackExecuted = false
-
-    bamseBear = createLiar
+    bamseBear = {}
+    bamseBear.expect
       function_name: 'myFunction'
       run_callback:
         no_arguments: true

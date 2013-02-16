@@ -5,6 +5,8 @@ after       = require('fluent-time').after
 
 lies        = require '../src/beautiful-lies'
 
+lies.expect()
+
 describe 'run_callback_flow', ->
   liar = {}
   beforeEach ->

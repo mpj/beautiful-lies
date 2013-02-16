@@ -1,14 +1,12 @@
-create_liar = (expectations) ->
-  host = {}
-  host.expect expectations
-
-# Inject built-in plugins
-create_liar.plugins = require './plugins'
-
-init = () ->
-  Object.prototype.expect = expect
+lies = {}
+lies.plugins = require './plugins'
 
 expect = (expectations) ->
+
+  if not expectations?
+    Object.prototype.expect = expect
+    return
+
   expectations = [ expectations ] if not Array.isArray expectations
 
   for expectation in expectations
@@ -19,6 +17,12 @@ expect = (expectations) ->
   this.__expectations.push e for e in expectations
   this
 
+lies.expect = expect
+
+lies.init = () ->
+  expect()
+
+
 preprocessExpectation = (expectation) ->
   if not expectation.function_name?
     throw new Error 'expectation must have property "function_name"'
@@ -28,9 +32,9 @@ preprocessExpectation = (expectation) ->
 
 injectPlugins = (expectation) ->
   for own key, value of expectation
-    if create_liar.plugins[key]
+    if lies.plugins[key]
       delete expectation[key]
-      generated = create_liar.plugins[key](value)
+      generated = lies.plugins[key](value)
       for own key, value of generated
         expectation[key] = generated[key]
 
@@ -261,5 +265,4 @@ args_as_array = (arguments_obj) ->
   return [] if not arguments_obj?
   arg for arg in arguments_obj
 
-module.exports.createLiar = create_liar
-module.exports.init = init
+module.exports = lies

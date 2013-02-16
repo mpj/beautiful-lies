@@ -4,7 +4,7 @@ expect      = chai.expect
 after       = require('fluent-time').after
 lies        = require '../src/beautiful-lies'
 
-lies.init()
+lies.expect()
 
 # TODO: Add support for simultaneous calls of another (of) callback
 # and the handler callback

@@ -4,7 +4,7 @@ expect      = chai.expect
 
 lies        = require '../src/beautiful-lies'
 
-lies.init()
+lies.expect()
 
 describe 'expect (basic cases)', ->
   liar = null

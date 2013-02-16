@@ -4,6 +4,8 @@ expect      = chai.expect
 
 lies        = require '../src/beautiful-lies'
 
+lies.expect()
+
 describe 'call validation', ->
   sword = null
   beforeEach ->

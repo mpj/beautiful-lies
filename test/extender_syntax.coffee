@@ -4,12 +4,15 @@ expect      = chai.expect
 
 lies        = require '../src/beautiful-lies'
 
+lies.expect()
+
+
 # TODO change to addLie
 describe 'Given that we call init()', ->
   obj = null
 
   beforeEach ->
-    lies.init()
+    lies.expect()
     obj = {}
 
   describe 'and call addLie on any object', ->
