@@ -2,17 +2,15 @@ chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
 
-lies        = require '../src/beautiful-lies'
-
-lies.expect()
+beautiful        = require '../src/beautiful-lies'
+beautiful.lie()
 
 describe 'call validation', ->
   sword = null
   beforeEach ->
     sword = {}
-    sword.expect {
+    sword.lie
       function_name: 'cut'
-    }
 
   it 'should have 0 calls before calling', ->
     sword.cut.times_called.should.equal 0

@@ -2,9 +2,9 @@ chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
 after       = require('fluent-time').after
-lies        = require '../src/beautiful-lies'
+beautiful   = require '../src/beautiful-lies'
 
-lies.expect()
+beautiful.lie()
 
 # TODO: Add support for simultaneous calls of another (of) callback
 # and the handler callback
@@ -13,7 +13,7 @@ describe 'Runs callback', ->
 
   liar = {}
 
-  liar.expect [
+  liar.lie [
     function_name: 'connect'
     run_callback: [
       argument_2:
@@ -31,7 +31,7 @@ describe 'Runs callback (result object instead of array of result object)', ->
 
   liar = {}
 
-  liar.expect [
+  liar.lie [
     function_name: 'connect'
     run_callback:
       argument_2:
@@ -46,7 +46,7 @@ describe 'Runs callback (result object instead of array of result object)', ->
 
 describe 'Runs callback with error arguments', ->
   liar = {}
-  liar.expect [
+  liar.lie [
     function_name: 'query'
     run_callback: [
       argument_1:
@@ -63,7 +63,7 @@ describe 'Runs callback with error arguments', ->
 
 describe 'Runs callback with dual arguments', ->
   liar = {}
-  liar.expect [
+  liar.lie [
     function_name: 'query'
     run_callback: [
       argument_2:
@@ -86,7 +86,7 @@ describe 'run_callback defined with no_arguments', ->
   passedToCallback = null
 
   beforeEach (done) ->
-    liar.expect [
+    liar.lie [
       function_name: 'query',
       run_callback: [
         no_arguments: true
@@ -107,7 +107,7 @@ describe 'Runs callback order', ->
 
   it 'should call callbacks in turn', ->
     liar = {}
-    liar.expect [
+    liar.lie [
       function_name: 'query'
       run_callback: [
         {
@@ -140,7 +140,7 @@ describe 'Runs callback order', ->
 
   it 'should work with multiple expectations', (done) ->
     liar = {}
-    liar.expect [
+    liar.lie [
       {
         function_name: 'count'
         run_callback: [
@@ -190,7 +190,7 @@ describe 'Runs callback order', ->
       beforeEach (done) ->
         liar = {}
 
-        liar.expect [
+        liar.lie [
           function_name: 'query'
           run_callback: [
             {
@@ -219,7 +219,7 @@ describe 'Runs callback order', ->
       result = null
       beforeEach (done) ->
         liar = {}
-        liar.expect [
+        liar.lie [
           function_name: 'query'
           run_callback: [
             {
@@ -261,7 +261,7 @@ describe 'run_callback has an "of" property', (done) ->
 
     beforeEach (done) ->
 
-      liar.expect [
+      liar.lie [
         {
           function_name: 'addEventListener'
         }, {
@@ -287,7 +287,7 @@ describe 'run_callback has an "of" property', (done) ->
   describe 'and has multiple event listeners', ->
 
     beforeEach ->
-      liar.expect [
+      liar.lie [
         {
           function_name: 'addEventListener'
           arguments: [ 'onLoad' ]
@@ -338,7 +338,7 @@ describe 'run_callback has an "of" property', (done) ->
 
   describe 'and defines a single argument (as opposed to array)', ->
     beforeEach ->
-      liar.expect [
+      liar.lie [
         {
           function_name: 'addEventListener'
           arguments: [ 'onResult' ]
@@ -370,7 +370,7 @@ describe 'run_callback has an "of" property', (done) ->
 
 it 'should support on_value for callback arguments', (done) ->
   liar = {}
-  liar.expect [
+  liar.lie [
     function_name: 'connect'
     run_callback: [
       argument_2:
@@ -392,7 +392,7 @@ it 'should support on_value for callback arguments', (done) ->
 
 it 'should treat simple objects to on_value the same way as an array with 1 item', (done) ->
   liar = {}
-  liar.expect [
+  liar.lie [
     function_name: 'connect'
     run_callback: [
       argument_2:
@@ -417,7 +417,7 @@ describe 'Syntax checking', ->
   beforeEach -> liar = {}
   it 'should have a nice warning when too few callbacks', ->
     (->
-      liar.expect [
+      liar.lie [
         function_name: 'kaboom'
         run_callback: [
           {
@@ -436,7 +436,7 @@ describe 'Syntax checking', ->
     ).should.throw 'kaboom was called 3 times, but only defined 2 run_callback.'
 
   it 'should not display the nice warning when there is only a single callback result', (done) ->
-    liar.expect [
+    liar.lie [
       function_name: 'shoot',
       run_callback: [{
         argument_1:
@@ -452,7 +452,7 @@ describe 'Syntax checking', ->
 
   it 'should validate that arguments is an array (on_value)', ->
     (->
-      liar.expect [
+      liar.lie [
         function_name: 'birth'
         returns:
           value: {}
@@ -468,7 +468,7 @@ describe 'Syntax checking', ->
 
   it 'should validate function_name of on_value', ->
     (->
-      liar.expect [
+      liar.lie [
         function_name: 'do_stuff'
         returns:
           value: {}
@@ -481,7 +481,7 @@ describe 'Syntax checking', ->
 
   it 'should verify that of is an object (string)', ->
     (->
-      liar.expect [
+      liar.lie [
         function_name: 'do_things'
         run_callback:
           of: 'otherFunction'
@@ -491,7 +491,7 @@ describe 'Syntax checking', ->
 
   it 'should verify that of is an object (number)', ->
     (->
-      liar.expect [
+      liar.lie [
         function_name: 'hello'
         run_callback:
           of: 871
@@ -501,7 +501,7 @@ describe 'Syntax checking', ->
 
   it 'should throw pretty error message if an of command does\'nt match any callback', ->
     (->
-      liar.expect [{
+      liar.lie [{
           function_name: 'addEventListener'
           arguments: [ 'onLoad' ]
         },{
@@ -518,7 +518,7 @@ describe 'Syntax checking', ->
 
   it 'should throw a nice error message if too broad a match', ->
     (->
-      liar.expect [
+      liar.lie [
         {
           function_name: 'addEventListener'
           arguments: [ 'onLoad' ]

@@ -2,9 +2,9 @@ chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
 
-lies        = require '../src/beautiful-lies'
+beautiful        = require '../src/beautiful-lies'
 
-lies.expect()
+beautiful.lie()
 
 
 # TODO change to addLie
@@ -12,12 +12,11 @@ describe 'Given that we call init()', ->
   obj = null
 
   beforeEach ->
-    lies.expect()
     obj = {}
 
   describe 'and call addLie on any object', ->
     beforeEach ->
-      obj.expect
+      obj.lie
         function_name: 'someFunction'
         returns:
           value:
@@ -29,7 +28,7 @@ describe 'Given that we call init()', ->
 
     describe 'and adds a lie for another function', ->
       beforeEach ->
-        obj.expect
+        obj.lie
           function_name: 'anotherFunction'
           returns:
             value: 8
@@ -42,13 +41,13 @@ describe 'Given that we call init()', ->
 
   describe 'when we call addLie two times with different expected arguments', ->
     beforeEach ->
-      obj.expect
+      obj.lie
         function_name: 'attackWith'
         arguments: [ 'ninja' ]
         returns:
           value: "Hai!"
 
-      obj.expect
+      obj.lie
         function_name: 'attackWith'
         arguments: [ 'cowboy' ]
         returns:

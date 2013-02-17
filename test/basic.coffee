@@ -2,18 +2,18 @@ chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
 
-lies        = require '../src/beautiful-lies'
+beautifulLies        = require '../src/beautiful-lies'
 
-lies.expect()
+beautifulLies.lie()
 
-describe 'expect (basic cases)', ->
+describe 'lie (basic cases)', ->
   liar = null
 
   beforeEach ->
     liar = {}
 
   it 'Should simulate a function call', ->
-    liar.expect
+    liar.lie
       function_name: 'someFunction'
       returns:
         value:
@@ -24,7 +24,7 @@ describe 'expect (basic cases)', ->
 
   describe 'When returns.self is true', ->
     beforeEach ->
-      liar.expect
+      liar.lie
         function_name: 'superFunction'
         returns:
           self: true
@@ -34,7 +34,7 @@ describe 'expect (basic cases)', ->
 
   describe 'When returns.self is false', ->
     beforeEach ->
-      liar.expect
+      liar.lie
         function_name: 'superFunction'
         returns:
           self: false
@@ -46,7 +46,7 @@ describe 'expect (basic cases)', ->
 
   describe 'arguments provided', ->
     beforeEach ->
-      liar.expect
+      liar.lie
           function_name: 'funkyFunction'
           arguments: [ 'apples' ]
           returns:
@@ -69,7 +69,7 @@ describe 'expect (basic cases)', ->
 
   describe 'Multiple lies', ->
     beforeEach ->
-      liar.expect [
+      liar.lie [
         {
           function_name: 'authorize'
           returns:
@@ -89,7 +89,7 @@ describe 'expect (basic cases)', ->
 
   describe 'Expectations should be nestable', ->
     beforeEach ->
-      liar.expect
+      liar.lie
         function_name: 'connect'
         returns:
           value: { status: 'open' }
@@ -106,7 +106,7 @@ describe 'expect (basic cases)', ->
       connection.query().should.equal '5 little pigs'
 
   it 'should match to right lie if multiple per function', ->
-    liar.expect [{
+    liar.lie [{
       function_name: 'add'
       arguments: [2, 3]
       returns:
@@ -125,7 +125,7 @@ describe 'expect (basic cases)', ->
 
     it 'should validate that return has a value property', ->
       (->
-        liar.expect
+        liar.lie
           function_name: 'something'
           returns:
             values: 'somevalue' # <- spelled wrong, an "s" at the end!
@@ -136,13 +136,13 @@ describe 'expect (basic cases)', ->
 
     it 'should validate function_name of root', ->
       (->
-        liar.expect
+        liar.lie
           function: 'do_stuff' # forgot _name
       ).should.throw 'expectation must have property "function_name"'
 
     it 'should validate that arguments is an array (root)', ->
       (->
-        liar.expect
+        liar.lie
           function_name: 'woop'
           arguments: 'hats' # forgot the array brackets
         liar.woop()
@@ -151,7 +151,7 @@ describe 'expect (basic cases)', ->
     it 'should validate that function is string', ->
       (->
         myFunc = -> # just declare a random function
-        liar.expect
+        liar.lie
           function_name: myFunc
           returns: 9
       ).should.throw 'function_name must be a string.'

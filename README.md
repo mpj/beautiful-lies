@@ -9,12 +9,11 @@ Mocks for asynchronous JavaScript that are easy on the eyes.  Yay! Hooray! Fnuff
 
 #### Create a test double ...
 ```javascript
-var lies = require('beautiful-lies')
-
-lies.expect()
+var beautiful = require('beautiful-lies')
+    beautiful.lie()
 
 var db = {}
-db.expect({
+db.lie({
   function_name: 'connect',
   on_promise_done: {
     function_name: 'query',
@@ -35,10 +34,10 @@ db.connect().done(function() {
 
 ## Syntax
 
-Liars are generated using a basic hierarchial JSON-based language,
-that has three basic types of building blocks - expectations specs, result specs and callback specs:
+Liars are generated using a simple, hierarchial JSON-based DSL,
+that has three basic types of building specifications: expectations, results and callbacks.
 
-### Expectation spec
+### Expectation specification
 ```javascript
 {
   function_name: 'collection',
@@ -52,7 +51,7 @@ that has three basic types of building blocks - expectations specs, result specs
 }
 ```
 
-### Result spec
+### Result specification
 ```javascript
 {
   self: false
@@ -61,7 +60,7 @@ that has three basic types of building blocks - expectations specs, result specs
 },
 ```
 
-### Callback spec
+### Callback specification
 ```javascript
 {
   argument_1: /* RESULT SPEC GOES HERE */

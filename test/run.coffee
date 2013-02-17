@@ -2,9 +2,8 @@ chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
 after       = require('fluent-time').after
-lies        = require '../src/beautiful-lies'
-
-lies.expect()
+beautiful        = require '../src/beautiful-lies'
+beautiful.lie()
 
 describe 'run function', ->
 
@@ -17,7 +16,7 @@ describe 'run function', ->
     runFunctionFunctionExecuted = false
     callbackExecuted = false
     bamseBear = {}
-    bamseBear.expect
+    bamseBear.lie
       function_name: 'myFunction'
       run_callback:
         no_arguments: true

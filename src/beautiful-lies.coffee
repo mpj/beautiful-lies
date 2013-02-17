@@ -1,10 +1,10 @@
-lies = {}
-lies.macros = require './macros'
 
-expect = (expectations) ->
+macros = require './macros'
+
+lie = (expectations) ->
 
   if not expectations?
-    Object.prototype.expect = expect
+    Object.prototype.lie = lie
     return
 
   expectations = [ expectations ] if not Array.isArray expectations
@@ -17,24 +17,18 @@ expect = (expectations) ->
   this.__expectations.push e for e in expectations
   this
 
-lies.expect = expect
-
-lies.init = () ->
-  expect()
-
-
 preprocessExpectation = (expectation) ->
   if not expectation.function_name?
     throw new Error 'expectation must have property "function_name"'
   if typeof expectation.function_name isnt 'string'
     throw new Error 'function_name must be a string.'
-  injectPlugins expectation
+  injectMacros expectation
 
-injectPlugins = (expectation) ->
+injectMacros = (expectation) ->
   for own key, value of expectation
-    if lies.macros[key]
+    if macros[key]
       delete expectation[key]
-      generated = lies.macros[key](value)
+      generated = macros[key](value)
       for own key, value of generated
         expectation[key] = generated[key]
 
@@ -82,7 +76,7 @@ assignHandler = (host, function_name) ->
         # we implicitly assume that the user means an empty object.
         result_spec.value ?= {}
 
-        result_spec.value.expect result_spec.on_value
+        result_spec.value.lie result_spec.on_value
 
       if result_spec.self is true
         return host
@@ -265,4 +259,7 @@ args_as_array = (arguments_obj) ->
   return [] if not arguments_obj?
   arg for arg in arguments_obj
 
-module.exports = lies
+module.exports = {
+  lie: lie
+  macros: macros
+}

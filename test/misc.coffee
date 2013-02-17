@@ -2,13 +2,12 @@ chai        = require 'chai'
 should      = chai.should()
 expect      = chai.expect
 
-lies        = require '../src/beautiful-lies'
-
-lies.expect()
+beautiful        = require '../src/beautiful-lies'
+beautiful.lie()
 
 it 'Value should be implicit if on_value defined', (done) ->
   liar = {}
-  liar.expect
+  liar.lie
     function_name: 'connect'
     run_callback_flow: [
       argument_2:

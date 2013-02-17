@@ -3,14 +3,13 @@ should      = chai.should()
 expect      = chai.expect
 after       = require('fluent-time').after
 
-lies        = require '../src/beautiful-lies'
-
-lies.expect()
+beautiful        = require '../src/beautiful-lies'
+beautiful.lie()
 
 describe 'run_callback_flow', ->
   liar = {}
   beforeEach ->
-    liar.expect
+    liar.lie
       function_name: 'query'
       run_callback_flow: [
         {
