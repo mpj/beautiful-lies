@@ -232,3 +232,25 @@ describe 'promise_fail_value plugin', ->
     dog.meow_async().fail (error) ->
       error.should.equal "Dogs don't meow!"
       done()
+
+
+
+it 'Custom macro that contains function_name', ->
+
+  beautiful.macros.cool = ->
+    function_name: 'beCool'
+    returns:
+      value: "How you doin'?"
+
+  dork = {}
+  dork.lie
+    cool: true
+
+  dork.beCool().should.equal "How you doin'?"
+
+
+
+
+
+
+

@@ -18,11 +18,14 @@ lie = (expectations) ->
   this
 
 preprocessExpectation = (expectation) ->
+
+  injectMacros expectation
+
   if not expectation.function_name?
     throw new Error 'expectation must have property "function_name"'
   if typeof expectation.function_name isnt 'string'
     throw new Error 'function_name must be a string.'
-  injectMacros expectation
+
 
 injectMacros = (expectation) ->
   for own key, value of expectation
