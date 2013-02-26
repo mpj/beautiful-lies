@@ -100,7 +100,36 @@ assignHandler = (host, function_name) ->
     # multiple callback specifications)
     process_single_callback_spec = (callback_spec) ->
 
-      if callback_spec.of
+      # 5.2.1 If the "property_xxxxxx" is set on the callback
+      # specification, that means that we want the result
+      # specification passed to it to be set to that property on
+      # the host object.
+      assignPropertyWithName = null
+      assignPropertyWithResultSpec = null
+      for property_name of callback_spec
+        match = /property_(.+)/.exec property_name
+        if match?
+          assignPropertyWithName = match[1]
+          assignPropertyWithResultSpec = callback_spec[property_name]
+
+      if assignPropertyWithName
+        # Create a function that assigns the property value,
+        # and assign it as the callback to be used.
+        fn = (propValue) -> host[assignPropertyWithName] = propValue
+        # We then re-write the callback spec so that the result
+        # spec originally passed to property_xxxx is passed to
+        # argument_1, which will make it pass to our newly
+        # created function.
+        callback_spec.argument_1 = assignPropertyWithResultSpec
+        # TODO The above feels slighly weird.. Perhaps it could be
+        # made in a better way.
+
+      # 5.2.2 If the "of" property is set on the callback specification,
+      # that means that we want to call back to the callback of
+      # ANOTHER function, instead of any callback provided to the
+      # handler. This is used to mock out stuff like
+      # addEventListener(eventName, callback)
+      else if callback_spec.of
 
         if typeof callback_spec.of isnt 'object'
           throw new Error 'run_callback.of property was set to "' + callback_spec.of + '" - must be an object.'
@@ -109,11 +138,6 @@ assignHandler = (host, function_name) ->
         if callback_spec.of.arguments and not Array.isArray(callback_spec.of.arguments)
           callback_spec.of.arguments = [ callback_spec.of.arguments ]
 
-        # If the "of" property is set on the callback specification,
-        # that means that we want to call back to the callback of
-        # ANOTHER function, instead of any callback provided to the
-        # handler. This is used to mock out stuff like
-        # addEventListener(eventName, callback)
         candidates = host.__callbacks.filter (c) ->
           c.function_name is callback_spec.of.function_name and ( !callback_spec.of.arguments? or arrays_equal(callback_spec.of.arguments, c.arguments ) )
 
@@ -160,7 +184,7 @@ assignHandler = (host, function_name) ->
 
 
       # Finally, run the callback!
-      run_delayed this, fn, callback_arguments, callback_spec.delay ?= 50
+      run_delayed host, fn, callback_arguments, callback_spec.delay ?= 50
 
     if expectation.run_callback
 

@@ -540,6 +540,23 @@ describe 'Syntax checking', ->
       liar.doQuery()
     ).should.throw 'Tried to run callback provided to addEventListener, but I had multiple choices and could not guess which one was right. You need to provide run_callback.of.arguments.'
 
+describe 'when liar expects a loadProperty with a property_xxx property', ->
 
+  liar = {}
 
+  beforeEach ->
+    liar.lie
+      function_name: 'loadProperty'
+      arguments: [ 'albumCount' ]
+      run_callback:
+        property_albumCount:
+          value: 56
+
+  describe 'and loadProperty is called', ->
+    beforeEach (done) ->
+      liar.loadProperty 'albumCount'
+      setTimeout done, 51
+
+    it 'should assign albumCount', ->
+      liar.albumCount.should.equal 56
 
