@@ -63,11 +63,13 @@ that has three basic types of building specifications: expectations, results and
 ### Callback specification
 ```javascript
 {
-  argument_1: /* RESULT SPEC GOES HERE */
+  property_xxxx: /* RESULT SPEC GOES HERE */,
+  argument_1: /* RESULT SPEC GOES HERE */,
   argument_2: /* RESULT SPEC GOES HERE*/,
-  of:
+  of: {
     function_name: 'addEventListener'
     arguments: [ 'click' ]
+  },
   delay: 1000
 }
 ```
