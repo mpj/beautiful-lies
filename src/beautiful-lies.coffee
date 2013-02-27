@@ -120,23 +120,15 @@ assignHandler = (host, function_name) ->
           assignPropertyWithResultSpec = callback_spec[property_name]
 
       if assignPropertyWithName
-        # Create a function that assigns the property value,
-        # and assign it as the callback to be used.
-        fn = (propValue) -> host[assignPropertyWithName] = propValue
-        # We then re-write the callback spec so that the result
-        # spec originally passed to property_xxxx is passed to
-        # argument_1, which will make it pass to our newly
-        # created function.
-        callback_spec.argument_1 = assignPropertyWithResultSpec
-        # TODO The above feels slighly weird.. Perhaps it could be
-        # made in a better way.
+        host[assignPropertyWithName] =
+          process_result_spec assignPropertyWithResultSpec
 
       # 5.2.2 If the "of" property is set on the callback specification,
       # that means that we want to call back to the callback of
       # ANOTHER function, instead of any callback provided to the
       # handler. This is used to mock out stuff like
       # addEventListener(eventName, callback)
-      else if callback_spec.of
+      if callback_spec.of
 
         if typeof callback_spec.of isnt 'object'
           throw new Error 'run_callback.of property was set to "' + callback_spec.of + '" - must be an object.'

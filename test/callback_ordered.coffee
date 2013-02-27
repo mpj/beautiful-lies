@@ -560,3 +560,28 @@ describe 'when liar expects a loadProperty with a property_xxx property', ->
     it 'should assign albumCount', ->
       liar.albumCount.should.equal 56
 
+describe 'when property_xxx is combined with arguments_x', ->
+
+  liar = null
+  beforeEach ->
+    liar = {}
+    liar.lie
+      function_name: 'loadProperty'
+      arguments: [ 'artistName' ]
+      run_callback:
+        property_artistName:
+          value: 'Led Zeppelin'
+        argument_1:
+          value:
+            name: 'Led Zeppelin',
+            type: 'artist'
+
+  it 'should assign property before running callback', (done) ->
+    liar.loadProperty 'artistName', (data) ->
+      liar.artistName.should.equal 'Led Zeppelin'
+      data.name.should.equal 'Led Zeppelin'
+      data.type.should.equal 'artist'
+      done()
+
+
+
