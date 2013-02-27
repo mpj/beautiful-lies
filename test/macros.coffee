@@ -249,6 +249,24 @@ it 'Custom macro that contains function_name', ->
   dork.beCool().should.equal "How you doin'?"
 
 
+it 'Macros within macros', ->
+
+  beautiful.macros.hai = ->
+    returns:
+      value: 'Hai!'
+
+  beautiful.macros.ninja = ->
+    function_name: 'ninja'
+    hai: true
+
+  warrior = {}.lie
+    ninja: true
+
+  warrior.ninja().should.equal 'Hai!'
+
+
+
+
 
 
 

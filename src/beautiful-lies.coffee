@@ -27,11 +27,15 @@ preprocessExpectation = (expectation) ->
     throw new Error 'function_name must be a string.'
 
 
+# Macros (formerly called plugins) are functions that
+# generate Beautiful Lies DSL, the are used to metaprogram
+# mocks to reduce duplication.
 injectMacros = (expectation) ->
   for own key, value of expectation
     if macros[key]
       delete expectation[key]
       generated = macros[key](value)
+      injectMacros generated
       for own key, value of generated
         expectation[key] = generated[key]
 
@@ -258,9 +262,7 @@ filter_on_args = (expectations, args_obj) ->
   result()
 
 run_delayed = (thisObj, fn, args, delay) ->
-  setTimeout (->
-    fn.apply thisObj, args
-  ), delay
+  setTimeout (-> fn.apply thisObj, args ), delay
 
 find_function = (arguments_obj) ->
   for arg in arguments_obj
