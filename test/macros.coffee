@@ -125,7 +125,7 @@ describe 'on_promise_done plugin', ->
 
     liar.lie [
       function_name: 'connect'
-      on_promise_done: [
+      on_promise_done_value: [
         function_name: 'query'
         promise_done_value: [ 'John', 'Martha', 'Luke' ]
       ]

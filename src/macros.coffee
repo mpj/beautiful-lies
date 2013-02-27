@@ -32,11 +32,17 @@ macros =
       }]
 
   on_promise_done: (obj) ->
-    macros.promise_done
+    # FIXME Deprecate this in next major
+    console.warn 'on_promise_done is deprecated, use on_promise_done_value'
+    promise_done:
+      on_value: obj
+
+  on_promise_done_value: (obj) ->
+    promise_done:
       on_value: obj
 
   promise_done_value: (obj) ->
-    macros.promise_done
+    promise_done:
       value: obj
 
   promise_fail: (obj) ->
@@ -54,7 +60,7 @@ macros =
       }]
 
   promise_fail_value: (obj) ->
-    macros.promise_fail
+    promise_fail:
       value: obj
 
 module.exports = macros
