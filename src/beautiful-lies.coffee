@@ -44,21 +44,17 @@ assignHandler = (host, function_name) ->
   handler = () ->
 
     # 1. Find the expectation that matches the handler call.
-    expectation = null
-    expectations_matching = filter_on_function host.__expectations, function_name
-    if expectations_matching.length is 1 and not expectations_matching[0].arguments?
-      expectation = expectations_matching[0]
-    else
-      expectations_matching_args = filter_on_args expectations_matching, arguments
-      expectation = expectations_matching_args[0]
-      # TODO: What if we get multiple matches?
+    matches_name = filter_on_function host.__expectations, function_name
+    matches_args = filter_on_args matches_name, arguments
+    expectation = matches_args[0]
+    # TODO: Throw error on multiple matches
 
     # 2. Throw an error if we did not find an expectation
     # matching the handler call.
     if not expectation
       message = "#{ function_name } called with unexpected arguments. " +
                 "Actual: " + args_as_array(arguments).join(', ')
-      for match in expectations_matching
+      for match in matches_name
         message += "Possible: " + args_as_array(match.arguments).join(', ')
       throw new Error(message)
 
@@ -244,10 +240,15 @@ filter_on_args = (expectations, args_obj) ->
   result = -> e for e in expectations when matches_args_obj(e)
 
   matches_args_obj = (exp) ->
-    exp_args = exp.arguments ? []
-    if not Array.isArray exp_args
-      throw new Error "arguments must be of type Array."
-    arrays_equal exp_args, actual_args_cleaned
+
+    if exp.check
+      exp.check.apply null, actual_args_cleaned
+    else if exp.arguments?
+      if not Array.isArray exp.arguments
+        throw new Error "arguments must be of type Array."
+      arrays_equal exp.arguments, actual_args_cleaned
+    else
+      true
 
   actual_args_cleaned = remove_functions args_obj
 

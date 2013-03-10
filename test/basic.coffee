@@ -67,6 +67,36 @@ describe 'lie (basic cases)', ->
       liar.funkyFunction('apples')
         .should.equal 98
 
+  describe 'when we have  check function', ->
+    beforeEach ->
+      liar.lie
+        function_name: 'fancyFunction'
+        check: (idea) -> idea is 'Cats with hats'
+        returns:
+          value: 'Great style!'
+
+    it 'should check the arguments', ->
+      liar.fancyFunction('Cats with hats').should.equal 'Great style!'
+
+    describe 'with another check function', ->
+      beforeEach ->
+        liar.lie
+          function_name: 'fancyFunction'
+          check: (idea) -> idea is 'Dogs on skateboards'
+          returns:
+            value: 'Funny!'
+
+      it 'should pick the right one', ->
+        liar.fancyFunction('Dogs on skateboards').should.equal 'Funny!'
+
+      it 'should fail if trying a completely different one', ->
+        # FIXME This error message really looks like shit... :(
+        (->
+          liar.fancyFunction('Capybaras with machine guns')
+        ).should.throw 'fancyFunction called with unexpected arguments. Actual: Capybaras with machine gunsPossible: Possible: '
+
+
+
   describe 'Multiple lies', ->
     beforeEach ->
       liar.lie [
@@ -155,3 +185,4 @@ describe 'lie (basic cases)', ->
           function_name: myFunc
           returns: 9
       ).should.throw 'function_name must be a string.'
+
