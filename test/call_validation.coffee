@@ -3,9 +3,12 @@ should      = chai.should()
 expect      = chai.expect
 
 beautiful        = require '../src/beautiful-lies'
-beautiful.lie()
 
 describe 'call validation', ->
+
+  beforeEach -> beautiful.lie()
+  afterEach  -> delete Object.prototype.lie
+
   sword = null
   beforeEach ->
     sword = {}
@@ -41,11 +44,3 @@ describe 'call validation', ->
 
     it 'should be possible to check if it was NOT called with two args', ->
       sword.cut.called_with('diagonally', 'right').should.equal false
-
-
-
-
-
-
-
-

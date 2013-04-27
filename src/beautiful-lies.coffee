@@ -1,10 +1,10 @@
 
 macros = require './macros'
 
-lie = (expectations) ->
+lieFunc = (expectations) ->
 
   if not expectations?
-    Object.prototype.lie = lie
+    Object.prototype.lie = lieFunc
     return
 
   expectations = [ expectations ] if not Array.isArray expectations
@@ -282,6 +282,6 @@ args_as_array = (arguments_obj) ->
   arg for arg in arguments_obj
 
 module.exports = {
-  lie: lie
+  lie: lieFunc
   macros: macros
 }

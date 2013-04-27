@@ -4,9 +4,11 @@ expect      = chai.expect
 
 beautifulLies        = require '../src/beautiful-lies'
 
-beautifulLies.lie()
-
 describe 'lie (basic cases)', ->
+
+  beforeEach -> beautifulLies.lie()
+  afterEach  -> delete Object.prototype.lie
+
   liar = null
 
   beforeEach ->
@@ -185,4 +187,3 @@ describe 'lie (basic cases)', ->
           function_name: myFunc
           returns: 9
       ).should.throw 'function_name must be a string.'
-

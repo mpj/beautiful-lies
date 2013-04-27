@@ -4,13 +4,16 @@ expect      = chai.expect
 
 beautiful        = require '../src/beautiful-lies'
 
-beautiful.lie()
+
 
 
 # TODO change to addLie
 describe 'Given that we call init()', ->
-  obj = null
 
+  beforeEach -> beautiful.lie()
+  afterEach  -> delete Object.prototype.lie
+
+  obj = null
   beforeEach ->
     obj = {}
 
@@ -58,13 +61,3 @@ describe 'Given that we call init()', ->
 
     it 'should work to call the second one', ->
       obj.attackWith('cowboy').should.equal 'Bang! Bang!'
-
-
-
-
-
-
-
-
-
-

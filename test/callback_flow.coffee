@@ -4,9 +4,12 @@ expect      = chai.expect
 after       = require('fluent-time').after
 
 beautiful        = require '../src/beautiful-lies'
-beautiful.lie()
 
 describe 'run_callback_flow', ->
+
+  beforeEach -> beautiful.lie()
+  afterEach  -> delete Object.prototype.lie
+
   liar = {}
   beforeEach ->
     liar.lie

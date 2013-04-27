@@ -3,9 +3,13 @@ should      = chai.should()
 expect      = chai.expect
 after       = require('fluent-time').after
 beautiful        = require '../src/beautiful-lies'
-beautiful.lie()
+
 
 describe 'run function', ->
+
+  beforeEach -> beautiful.lie()
+  afterEach  -> delete Object.prototype.lie
+
 
   lastExecuted = null
   callbackExecuted = null
