@@ -42,6 +42,7 @@ that has three basic types of building specifications: expectations, results and
 {
   function_name: 'collection',
   arguments: [ 'members' ],
+  check: function() { return true },
   returns: /* RESULT SPEC GOES HERE */
   run_function: function() {
     // anything you want here.
