@@ -6,7 +6,7 @@ Beautiful Lies
 [1]: https://api.travis-ci.org/mpj/beautiful-lies.png
 [2]: https://travis-ci.org/mpj/beautiful-lies
 [3]: https://david-dm.org/mpj/beautiful-lies.png
-[4]: https://david-dm.org/jhnns/rewire#info=devDependencies&view=table
+[4]: https://david-dm.org/mpj/beautiful-lies#info=devDependencies&view=table
 
 Mocks for asynchronous JavaScript that are easy on the eyes.  Yay! Hooray! Fnuff.
 
