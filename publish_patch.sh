@@ -1,3 +1,4 @@
+#!/bin/sh
 # Dangerously fast way to publish a patch to NPM
 
 set -e # Stop if anything fails
