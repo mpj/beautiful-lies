@@ -69,6 +69,27 @@ describe 'lie (basic cases)', ->
       liar.funkyFunction('apples')
         .should.equal 98
 
+  describe 'arguments provided (complex objects)', ->
+    beforeEach ->
+      liar.lie
+        function_name: 'incredibleFunction'
+        arguments: [ 'apples', { 'fruit': 'oranges'} ]
+        returns: value: 1
+
+    it 'Should not work with wrong arguments', ->
+      (->
+        liar.incredibleFunction 'apples', { 'fruit': 'bananas'}
+      ).should.throw(
+        "incredibleFunction called with unexpected arguments. " +
+        'Actual: apples, {"fruit":"bananas"}' +
+        'Possible: apples, {"fruit":"oranges"}'
+      )
+
+    it 'But it will work with the right one', ->
+      liar.incredibleFunction('apples', { 'fruit': 'oranges' })
+        .should.equal 1
+
+
   describe 'when we have  check function', ->
     beforeEach ->
       liar.lie

@@ -1,5 +1,7 @@
 
 macros = require './macros'
+isPlainObject = require 'mout/lang/isPlainObject'
+deepEquals = require 'mout/object/deepEquals'
 
 lieFunc = (expectations) ->
 
@@ -52,10 +54,19 @@ assignHandler = (host, function_name) ->
     # 2. Throw an error if we did not find an expectation
     # matching the handler call.
     if not expectation
+      args_as_string = (args) ->
+        strings = args_as_array(args).map (arg) ->
+          if isPlainObject arg
+            JSON.stringify(arg)
+          else
+            arg
+        strings.join ', '
+
+
       message = "#{ function_name } called with unexpected arguments. " +
-                "Actual: " + args_as_array(arguments).join(', ')
+                "Actual: " + args_as_string(arguments)
       for match in matches_name
-        message += "Possible: " + args_as_array(match.arguments).join(', ')
+        message += "Possible: " + args_as_string(match.arguments)
       throw new Error(message)
 
     # 3. If the expectation specifies a run_function,
@@ -265,7 +276,7 @@ find_function = (arguments_obj) ->
 arrays_equal = (a, b) ->
   return false if a? isnt b? or a.length isnt b.length
   for item, i in a
-    return false if item isnt b[i]
+    return false if not deepEquals item, b[i]
   true
 
 remove_functions = (object) ->
@@ -280,6 +291,8 @@ args_as_array = (arguments_obj) ->
   # to a normal array.
   return [] if not arguments_obj?
   arg for arg in arguments_obj
+
+
 
 module.exports = {
   lie: lieFunc

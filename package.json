@@ -9,7 +9,9 @@
   },
   "description": "Test doubles for asynchronous JavaScript that are easy on the eyes.",
   "main": "lib/beautiful-lies.js",
-  "dependencies": {},
+  "dependencies": {
+    "mout": "~0.9.1"
+  },
   "devDependencies": {
     "mocha": "1.6.0",
     "coffee-script": "1.6.2",
