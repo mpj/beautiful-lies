@@ -34,7 +34,7 @@ VERSION=`./node_modules/grunt-cli/bin/grunt $BUMP_COMMAND |  grep -no 'to .*$' |
 git add package.json
 
 # Build it!
-grunt
+grunt build
 
 # Add the built files.
 git add lib/*.js
