@@ -89,6 +89,16 @@ describe 'lie (basic cases)', ->
       liar.incredibleFunction('apples', { 'fruit': 'oranges' })
         .should.equal 1
 
+  describe 'arguments provided (undefined)', ->
+    beforeEach ->
+      liar.lie
+        function_name: 'funnyFunction'
+        arguments: [ 'apple' ]
+        returns: value: 1
+
+    it 'Should work even when undefined passed', ->
+      liar.funnyFunction('apple', undefined).should.equal 1
+
 
   describe 'when we have  check function', ->
     beforeEach ->

@@ -2,6 +2,7 @@
 macros = require './macros'
 isPlainObject = require 'mout/lang/isPlainObject'
 deepEquals = require 'mout/object/deepEquals'
+isUndefined = require 'mout/lang/isUndefined'
 
 lieFunc = (expectations) ->
 
@@ -79,12 +80,12 @@ assignHandler = (host, function_name) ->
     # 4. Prepare a function for processing result specs.
     process_result_spec = (result_spec) ->
       return null if not result_spec
-      if  typeof result_spec.value is 'undefined' and
-          typeof result_spec.on_value is 'undefined' and
+      if  isUndefined(result_spec.value) and
+          isUndefined(result_spec.on_value) and
           !result_spec.self
         throw new Error('returns object must have property "value" or "on_value" or "self: true"')
 
-      if typeof result_spec.on_value isnt 'undefined'
+      if not isUndefined(result_spec.on_value)
 
         # If we have expectations on_value, but no value,
         # we implicitly assume that the user means an empty object.
@@ -251,7 +252,6 @@ filter_on_args = (expectations, args_obj) ->
   result = -> e for e in expectations when matches_args_obj(e)
 
   matches_args_obj = (exp) ->
-
     if exp.check
       exp.check.apply null, actual_args_cleaned
     else if exp.arguments?
@@ -261,7 +261,8 @@ filter_on_args = (expectations, args_obj) ->
     else
       true
 
-  actual_args_cleaned = remove_functions args_obj
+  actual_args_cleaned =
+    remove_functions(args_obj).filter (arg) -> not isUndefined arg
 
   result()
 
