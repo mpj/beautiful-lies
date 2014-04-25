@@ -99,6 +99,16 @@ describe 'lie (basic cases)', ->
     it 'Should work even when undefined passed', ->
       liar.funnyFunction('apple', undefined).should.equal 1
 
+  describe 'arguments provided (ANYTHING)', ->
+    beforeEach ->
+      liar.lie
+        function_name: 'superFunction'
+        arguments: [ beautifulLies.ANYTHING, 'oranges' ]
+        returns: value: 2
+
+    it 'should accept anything', ->
+      liar.superFunction('dog', 'oranges')
+        .should.equal 2
 
   describe 'when we have  check function', ->
     beforeEach ->

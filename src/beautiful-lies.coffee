@@ -4,6 +4,8 @@ isPlainObject = require 'mout/lang/isPlainObject'
 deepEquals = require 'mout/object/deepEquals'
 isUndefined = require 'mout/lang/isUndefined'
 
+ANYTHING = {}
+
 lieFunc = (expectations) ->
 
   if not expectations?
@@ -146,7 +148,7 @@ assignHandler = (host, function_name) ->
           callback_spec.of.arguments = [ callback_spec.of.arguments ]
 
         candidates = host.__callbacks.filter (c) ->
-          c.function_name is callback_spec.of.function_name and ( !callback_spec.of.arguments? or arrays_equal(callback_spec.of.arguments, c.arguments ) )
+          c.function_name is callback_spec.of.function_name and ( !callback_spec.of.arguments? or argument_arrays_equal(callback_spec.of.arguments, c.arguments ) )
 
         if candidates.length is 0
           throw new Error 'Tried to run callback provided to ' + callback_spec.of.function_name + ' along ' +
@@ -235,7 +237,7 @@ assignHandler = (host, function_name) ->
   handler.call_arguments = []
   handler.called_with = (args...) ->
     for call in handler.call_arguments
-      return true if arrays_equal call, args
+      return true if argument_arrays_equal call, args
     false
 
   host[function_name] = handler
@@ -257,7 +259,7 @@ filter_on_args = (expectations, args_obj) ->
     else if exp.arguments?
       if not Array.isArray exp.arguments
         throw new Error "arguments must be of type Array."
-      arrays_equal exp.arguments, actual_args_cleaned
+      argument_arrays_equal exp.arguments, actual_args_cleaned
     else
       true
 
@@ -274,10 +276,14 @@ find_function = (arguments_obj) ->
     return arg if is_function(arg)
   null
 
-arrays_equal = (a, b) ->
+
+# Compares two arrays (NOT argument objects)
+# of arguments if they match. ANYTHING will be counted
+# as matching anything.
+argument_arrays_equal = (a, b) ->
   return false if a? isnt b? or a.length isnt b.length
   for item, i in a
-    return false if not deepEquals item, b[i]
+    return false if item isnt ANYTHING and not deepEquals item, b[i]
   true
 
 remove_functions = (object) ->
@@ -296,6 +302,7 @@ args_as_array = (arguments_obj) ->
 
 
 module.exports = {
+  ANYTHING: ANYTHING
   lie: lieFunc
   macros: macros
 }
